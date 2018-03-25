@@ -51,17 +51,24 @@ fetchRestaurantFromURL = (callback) => {
 fillRestaurantHTML = (restaurant = self.restaurant) => {
   const name = document.getElementById('restaurant-name');
   name.innerHTML = restaurant.name;
-
   const address = document.getElementById('restaurant-address');
   address.innerHTML = restaurant.address;
-
+  //Setting the picture element for different image sizes
+  const pictureElement = document.getElementsByTagName('picture')[0];
+  const srcElementLarge = document.createElement('source');
+  const srcElementMedium = document.createElement('source');
+  srcElementLarge.setAttribute('media', '(min-width: 1000px)');
+  srcElementLarge.setAttribute('srcset', DBHelper.imageUrlForRestaurant(restaurant).original);
+  srcElementMedium.setAttribute('media', '(min-width: 678px)');
+  srcElementMedium.setAttribute('srcset', DBHelper.imageUrlForRestaurant(restaurant).medium);
   const image = document.getElementById('restaurant-img');
-  image.className = 'restaurant-img'
-  image.src = DBHelper.imageUrlForRestaurant(restaurant);
-
+  pictureElement.insertBefore(srcElementLarge, image);
+  pictureElement.insertBefore(srcElementMedium, image);
+  image.className = 'restaurant-img';
+  image.src = DBHelper.imageUrlForRestaurant(restaurant).small;
+  image.setAttribute("alt", DBHelper.imageDescriptionForRestaurant(restaurant));
   const cuisine = document.getElementById('restaurant-cuisine');
   cuisine.innerHTML = restaurant.cuisine_type;
-
   // fill operating hours
   if (restaurant.operating_hours) {
     fillRestaurantHoursHTML();
@@ -126,7 +133,12 @@ createReviewHTML = (review) => {
   li.appendChild(date);
 
   const rating = document.createElement('p');
-  rating.innerHTML = `Rating: ${review.rating}`;
+  let ratingStars = "";
+  for (let i=0; i < review.rating; i++){
+    ratingStars += "&#x2605;";
+  }
+  rating.innerHTML = `Rating: ${ratingStars}`;
+  rating.classList.add("rating");
   li.appendChild(rating);
 
   const comments = document.createElement('p');

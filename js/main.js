@@ -5,6 +5,17 @@ var map
 var markers = []
 
 /**
+ * Create the database for storing visited restaurants
+ */
+
+// let dbPromise = idb.open('restaurants-store', 1, (upgradeDb) => {
+//   switch(upgradeDb.oldVersion){
+//       case 0:
+//       db.createObjectStore('restaurants', {keyPath: "id"}); 
+//   }
+// })
+
+/**
  * Fetch neighborhoods and cuisines as soon as the page is loaded.
  */
 document.addEventListener('DOMContentLoaded', (event) => {
@@ -140,10 +151,11 @@ createRestaurantHTML = (restaurant) => {
 
   const image = document.createElement('img');
   image.className = 'restaurant-img';
-  image.src = DBHelper.imageUrlForRestaurant(restaurant);
+  image.src = DBHelper.imageUrlForRestaurant(restaurant).small;
+  image.setAttribute('alt', DBHelper.imageDescriptionForRestaurant(restaurant));
   li.append(image);
 
-  const name = document.createElement('h1');
+  const name = document.createElement('h2');
   name.innerHTML = restaurant.name;
   li.append(name);
 
@@ -156,11 +168,18 @@ createRestaurantHTML = (restaurant) => {
   li.append(address);
 
   const more = document.createElement('a');
-  more.innerHTML = 'View Details';
+  // Reducing and making links names more useful for screen readers
+  const linkLabelLength = restaurant.name.length;
+  let linkLabel = restaurant.name;
+  if (linkLabelLength >= 20){
+    // getting the first word of the restaurant name in case it's too long
+    linkLabel = linkLabel.replace(/ .*/,'');
+  }
+  more.innerHTML = `ABOUT ${linkLabel}`;
   more.href = DBHelper.urlForRestaurant(restaurant);
-  li.append(more)
+  li.append(more);
 
-  return li
+  return li;
 }
 
 /**
@@ -175,4 +194,17 @@ addMarkersToMap = (restaurants = self.restaurants) => {
     });
     self.markers.push(marker);
   });
+}
+
+/**
+ * Registering the service worker so that the site works offline
+ */
+
+if (navigator.serviceWorker) {
+  navigator.serviceWorker.register("/sw.js").then((reg) => {
+    console.log("successfully installed");
+  }).catch((err) => {
+    console.log("bad");
+    return err;
+  })
 }
