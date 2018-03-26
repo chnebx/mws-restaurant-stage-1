@@ -49,7 +49,7 @@ self.addEventListener("fetch", (event) => {
                                 return response;
                             });
                         } else {
-                            if (response){
+                            if (response) {
                                 return response;
                             }
                         }

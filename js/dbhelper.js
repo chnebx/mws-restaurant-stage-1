@@ -150,7 +150,7 @@ class DBHelper {
    * Restaurant image URL.
    */
   static imageUrlForRestaurant(restaurant) {
-    // return (`/img/${restaurant.photograph}`);
+    // EDIT : I decided to return an object so as to provide different image sizes
     return {
       original: `/img/${restaurant.photograph}`,
       small: `/img/small/${restaurant.photograph}`,
@@ -162,6 +162,7 @@ class DBHelper {
    * Restaurant image attribute description.
    */
   static imageDescriptionForRestaurant(restaurant) {
+    // adding different alt attributes for each picture
     return restaurant.description;
   }
 

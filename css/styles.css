@@ -21,6 +21,14 @@ body {
 }
 
 
+:focus {
+  /* I decided to apply this focus style not only on links
+  but also on select options and other elements so as to make them more visible */
+  color: #3397db;
+  box-shadow: 0 0 10px #3397db;
+}
+
+
 ul, 
 li {
 	font-family: Arial, Helvetica, sans-serif;
@@ -30,13 +38,12 @@ li {
 
 
 a {
-	color: orange;
+  color: orange;
 	text-decoration: none;
 }
 
 
 a:hover, a:focus {
-	color: #3397db;
 	text-decoration: none;
 }
 
@@ -201,6 +208,7 @@ nav h1 a {
 
 
 /* ====================== Restaurant Listing ====================== */
+
 #restaurants-list {
   background-color: #f3f3f3;
   list-style: outside none none;
@@ -219,7 +227,6 @@ nav h1 a {
   margin-left: 4%;
   margin-top: 15px;
   margin-bottom: 15px;
-  min-height: 380px;
   padding: 0 30px 25px;
   text-align: center;
   width: 96%;
@@ -228,10 +235,8 @@ nav h1 a {
 
 #restaurants-list .restaurant-img {
   background-color: #ccc;
-  display: block;
   margin: 0;
   max-width: 100%;
-  min-height: 248px;
   min-width: 100%;
 }
 
@@ -270,21 +275,27 @@ are less prominent than the main title */
 }
 
 
-@media screen and (min-width: 600px) and (max-width: 753px) {
+@media screen and (min-width: 550px) and (max-width: 753px) {
 
-  #restaurants-list li h1 {
-    font-size: 1.4em;
+  #restaurants-list {
+    width: 550px;
+  }
+
+
+  #restaurants-list li h2 {
+    font-size: 1.8em;
   }
 
 
   #restaurants-list p {
-    font-size: 1.3em;
+    font-size: 1.2em;
   }
 
 
   #restaurants-list li a {
     font-size: 1em;
     width: 60%;
+    line-height: 1.5em;
   }
 
 }
@@ -554,15 +565,15 @@ caption {
   }
 
 
-  #restaurant-img {
-    width: 100%;
-  }
-
-
   #restaurant-hours {
     width: 55%;
     order: 4;
     min-width: 350px;
+  }
+
+
+  #restaurant-hours td {
+    font-size: 1em;
   }
 
 
@@ -582,11 +593,6 @@ caption {
     order: 6;
     width: 55%;
     margin-top: 0;
-  }
-
-
-  #restaurant-hours td {
-    font-size: 1em;
   }
 
 }
@@ -618,10 +624,18 @@ caption {
 
   .inside #map-container {
     width: 40%;
-    position: fixed; 
+    position: fixed;
     right: 0;
     top: 80px;
     height: 87%;
+  }
+
+
+  picture {
+    width: 70%;
+    max-width: 600px;
+    margin-right: 0;
+    order: 2;
   }
 
 
@@ -632,29 +646,22 @@ caption {
   }
 
 
-  picture {
-    width: 70%;
-    max-width: 600px;
-    margin-right: 0;
-  }
-
-
   #restaurant-cuisine {
     max-width: 600px;
     width: 70%;
     margin-right: 0;
-    order: 2;
+    order: 3;
   }
 
 
   #restaurant-address {
-    order: 3;
+    order: 4;
   }
 
 
   #restaurant-hours {
     width: 90%;
-    order: 4;
+    order: 5;
     max-width: 600px;
     font-size: 1.2em;
   }
