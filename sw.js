@@ -1,5 +1,5 @@
-let currentCacheName = "static-v1";
-let dynamicCacheName = "dynamic-v1";
+let currentCacheName = "static-v2";
+let dynamicCacheName = "dynamic-v2";
 
 self.addEventListener("install", (event) => {
     event.waitUntil(
