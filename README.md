@@ -7,7 +7,7 @@
 
 - [x] Select options combo lists weren't usable on smaller screens
 - [x] The div with an id of "map" needed an appropiate aria role ( "application" )
-- [ ] The "breadcrumb" list wasn't compatible with aria structure ( still unsure waiting for validation )
+- [x] The "breadcrumb" list wasn't compatible with aria structure
 
 ### Updates added to the project:
 
