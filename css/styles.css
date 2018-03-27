@@ -91,11 +91,6 @@ nav {
 }
 
 
-nav[aria-label="Breadcrumb"] {
-  height: 0;
-}
-
-
 nav h1 {
   margin: auto;
 }
