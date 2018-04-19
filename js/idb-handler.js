@@ -25,3 +25,11 @@ const readIdbData = (objStore) => {
         return store.getAll();
     });
 };
+
+const getDbItem = (objStore, itemId) => {
+    return dbPromise.then((db) => {
+        const tx = db.transaction(objStore, 'readonly');
+        const store = tx.objectStore(objStore);
+        return store.get(parseInt(itemId));
+    })
+}
