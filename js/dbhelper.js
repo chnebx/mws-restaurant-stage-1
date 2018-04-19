@@ -47,22 +47,30 @@ class DBHelper {
    */
   static fetchRestaurantById(id, callback) {
     // fetch all restaurants with proper error handling.
-    return fetch(`${DBHelper.DATABASE_URL}/${id}`)
-      .then((data) => {
+    getDbItem('restaurants', id).then(restaurant => {
+      if (restaurant) {
+        // if restaurants objectStore contains the specified restaurant
+        return callback(null, restaurant);
+      }
+
+      return fetch(`${DBHelper.DATABASE_URL}/${id}`).then((data) => {
+        // fetches data first to get content
         if (!data.ok) {
           const error = (`Request failed. Returned status of ${data.status}`);
           callback(error, null);
-          return;
-        }     
-        return data.json()
-          .then((responseData) => {
-            callback(null, responseData);
-          })
+        }
+        return data.json().then((responseData) => {
+          // if data is recieved, populate the database first
+          storeIdbData('restaurants', responseData);
+
+          callback(null, responseData);
+        })
       })
-      .catch((err) => {
-        const error = (`Request failed. Returned status of ${err.status}`);
-        callback(error, null);
-      })
+    })
+    .catch((err) => {
+      const error = (`Request failed. Returned status of ${err.status}`);
+      callback(error, null);
+    });
   }
 
   /**
