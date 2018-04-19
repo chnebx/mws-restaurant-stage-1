@@ -17,21 +17,22 @@ class DBHelper {
    */
   static fetchRestaurants(callback) {
     return fetch(DBHelper.DATABASE_URL).then((data) => {
+      // fetches data first to get content
       if (!data.ok) {
         const error = (`Request failed. Returned status of ${data.status}`);
         callback(error, null);
         return;
       }
       return data.json().then((responseData) => {
-        console.log(responseData);
+        // if data is recieved, populate the database first
         responseData.forEach(restaurant => storeIdbData('restaurants', restaurant));
+
         callback(null, responseData);
       })
     })
     .catch((err) => {
-      const error = (`Request failed. Returned status of ${err.status}`);
-      callback(error, null);
       readIdbData('restaurants').then(restaurants => {
+        // if the fetch process failed, check the database and get data from there
         if (restaurants.length) {
           return callback(null, restaurants);
         }
