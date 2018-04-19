@@ -47,12 +47,15 @@ self.addEventListener("fetch", (event) => {
                     return fetch(event.request)
                     .then((response) => {
                         if (event.request.url.indexOf("maps.googleapis") == -1) {
-                            if (event.request.url.indexOf("img") > -1 && !response.ok) {
-                                return caches.open(currentCacheName).then(cache => {
-                                    return cache.match(fallbackUrl);
-                                })
-                            }
+                            //for any other elements than Google Maps one
                             if (event.request.url.indexOf("img") > -1) {
+                                if (!response.ok) {
+                                    // if fetching the new image failed
+                                    return caches.open(currentCacheName).then(cache => {
+                                        return cache.match(fallbackUrl);
+                                    })
+                                }
+                                // if fetching succeeded adds the image to the dynamic cache
                                 return caches.open(dynamicCacheName)
                                 .then((cache) => {
                                     cache.put(event.request.url, response.clone());
@@ -67,12 +70,14 @@ self.addEventListener("fetch", (event) => {
                         }
                     })
                     .catch((err) => {
-                        console.log("fail");
                         return caches.open(currentCacheName)
                             .then((cache) => {
                                 if (event.request.url.indexOf("img") > -1) {
-                                    console.log("image not found");
                                     return cache.match(fallbackUrl);
+                                }
+
+                                if (event.request.url.indexOf("/restaurant.html?id") > -1){
+                                    return cache.match("/restaurant.html");
                                 }
                                 return cache.match("/skeleton.html");
                         });
@@ -86,7 +91,6 @@ self.addEventListener("fetch", (event) => {
                         }
 
                         if (event.request.url.indexOf("img") > -1) {
-                            console.log("image not found");
                             cache.match(fallbackUrl);
                         }
                 });
