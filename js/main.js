@@ -5,17 +5,6 @@ var map
 var markers = []
 
 /**
- * Create the database for storing visited restaurants
- */
-
-// let dbPromise = idb.open('restaurants-store', 1, (upgradeDb) => {
-//   switch(upgradeDb.oldVersion){
-//       case 0:
-//       db.createObjectStore('restaurants', {keyPath: "id"}); 
-//   }
-// })
-
-/**
  * Fetch neighborhoods and cuisines as soon as the page is loaded.
  */
 document.addEventListener('DOMContentLoaded', (event) => {
@@ -151,7 +140,8 @@ createRestaurantHTML = (restaurant) => {
 
   const image = document.createElement('img');
   image.className = 'restaurant-img';
-  image.src = DBHelper.imageUrlForRestaurant(restaurant).small;
+  let imgUrl = DBHelper.imageUrlForRestaurant(restaurant);
+  image.src = imgUrl.small;
   image.setAttribute('alt', DBHelper.imageDescriptionForRestaurant(restaurant));
   li.append(image);
 

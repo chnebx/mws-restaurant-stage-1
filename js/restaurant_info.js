@@ -53,6 +53,8 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   name.innerHTML = restaurant.name;
   const address = document.getElementById('restaurant-address');
   address.innerHTML = restaurant.address;
+  const image = document.getElementById('restaurant-img');
+  const imgUrl = DBHelper.imageUrlForRestaurant(restaurant);
 
   //Setting the picture element for different image sizes
   const pictureElement = document.getElementsByTagName('picture')[0];
@@ -61,18 +63,17 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
 
   //Setting different media attributes for specific sizes
   srcElementLarge.setAttribute('media', '(min-width: 1000px)');
-  srcElementLarge.setAttribute('srcset', DBHelper.imageUrlForRestaurant(restaurant).original);
-  srcElementMedium.setAttribute('media', '(min-width: 678px)');
-  srcElementMedium.setAttribute('srcset', DBHelper.imageUrlForRestaurant(restaurant).medium);
-  const image = document.getElementById('restaurant-img');
+  srcElementLarge.setAttribute('srcset', imgUrl.original);
+  srcElementMedium.setAttribute('media', '(min-width: 678px)'); 
+  srcElementMedium.setAttribute('srcset', imgUrl.medium);    
 
   //Structuring the picture element
   pictureElement.insertBefore(srcElementLarge, image);
   pictureElement.insertBefore(srcElementMedium, image);
-  image.className = 'restaurant-img';
 
   //Defining the image tag with its source set to the smallest picture
-  image.src = DBHelper.imageUrlForRestaurant(restaurant).small;
+  image.src = imgUrl.small;
+  image.className = 'restaurant-img';
   image.setAttribute("alt", DBHelper.imageDescriptionForRestaurant(restaurant));
   const cuisine = document.getElementById('restaurant-cuisine');
   cuisine.innerHTML = restaurant.cuisine_type;
