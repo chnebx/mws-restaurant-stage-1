@@ -27,7 +27,6 @@ class DBHelper {
         if (!data.ok) {
           const error = (`Request failed. Returned status of ${data.status}`);
           callback(error, null);
-          return;
         }
         return data.json().then((responseData) => {
           // if data is recieved, populate the database first
@@ -38,11 +37,8 @@ class DBHelper {
       })
     })
     .catch((err) => {
-      readIdbData('restaurants').then(restaurants => {
-        // if the fetch process failed, check the database and get data from there
-        
-      })
-
+      const error = (`Request failed. Returned status of ${data.status}`);
+      callback(error, null);
     });
   }
 
