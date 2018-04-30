@@ -2,12 +2,19 @@
  * Create the database for storing visited restaurants
  */
 
-let dbPromise = idb.open('restaurants-store', 1, (upgradeDb) => {
+const dbPromise = idb.open('restaurants-store', 1, (upgradeDb) => {
     switch(upgradeDb.oldVersion){
         case 0:
         upgradeDb.createObjectStore('restaurants', {keyPath: "id"}); 
     }
 });
+
+const checkDatabase = (objStore) => {
+    return dbPromise.then((db) => {
+        let val = db.objectStoreNames.contains(objStore);
+        return val;
+    })
+}
 
 const storeIdbData = (objStore, data) => {
     return dbPromise.then((db) => {
