@@ -1,0 +1,35 @@
+{
+  "name": "udacity-mws-chneb",
+  "version": "1.0.0",
+  "description": "My work on udacity \"mobile web specialist\" course",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chnebx/mws-restaurant-stage-1.git"
+  },
+  "author": "Chnebierk",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/chnebx/mws-restaurant-stage-1/issues"
+  },
+  "homepage": "https://github.com/chnebx/mws-restaurant-stage-1#readme",
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "browser-sync": "^2.23.7",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-plugin-import": "^2.11.0",
+    "gulp": "^3.9.1",
+    "gulp-babel": "^7.0.1",
+    "gulp-clean-css": "^3.9.3",
+    "gulp-concat": "^2.6.1",
+    "gulp-rename": "^1.2.2",
+    "gulp-sourcemaps": "^2.6.4",
+    "gulp-uglify": "^3.0.0",
+    "gulp-util": "^3.0.8",
+    "merge-stream": "^1.0.1"
+  }
+}
