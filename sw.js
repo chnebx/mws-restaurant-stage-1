@@ -1,5 +1,5 @@
-let currentCacheName = "static-v1";
-let dynamicCacheName = "dynamic-v1";
+let currentCacheName = "static-v2";
+let dynamicCacheName = "dynamic-v2";
 const fallbackUrl = "/img/default.svg";
 
 self.addEventListener("install", (event) => {
@@ -9,13 +9,9 @@ self.addEventListener("install", (event) => {
                 "/",
                 "/index.html",
                 "/restaurant.html",
-                "/js/restaurant_info.js",
-                "/js/dbhelper.js",
-                "/js/main.js",
-                "/js/idb-handler.js",
-                "/js/idb.js",
+                "/js/restaurant.js",
+                "/js/index.js",
                 "/css/styles.css",
-                "/data/restaurants.json",
                 "/skeleton.html",
                 "/img/default.svg"
             ]);
