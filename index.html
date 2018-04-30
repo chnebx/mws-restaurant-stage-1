@@ -4,9 +4,132 @@
 <head>
   <meta charset="UTF-8">
   <link rel="stylesheet" src="//normalize-css.googlecode.com/svn/trunk/normalize.css" />
-  <link rel="stylesheet" href="css/styles.css">
+  <link rel="preload" href="css/styles.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Restaurant Reviews</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body,td,th,p{
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 10pt;
+      color: #333;
+      line-height: 1.5;
+    }
+    body {
+      background-color: #fdfdfd;
+      margin: 0;
+      position:relative;
+    }
+    :focus {
+      /* I decided to apply this focus style not only on links
+      but also on select options and other elements so as to make them more visible */
+      color: #3397db;
+      box-shadow: 0 0 10px #3397db;
+    }
+    ul, 
+    li {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 10pt;
+      color: #333;
+    }
+    a {
+      color: orange;
+      text-decoration: none;
+    }
+    a:hover, a:focus {
+      text-decoration: none;
+    }
+    a img {
+      border: none 0 #fff;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      font-family: Arial, Helvetica, sans-serif;
+      margin: 0 0 20px;
+    }
+    article, aside, canvas, details, figcaption, figure, footer, header, hgroup, menu, nav, section {
+      display: block;
+    }
+    #maincontent {
+      background-color: #f3f3f3;
+      min-height: 100%;
+    }
+    #footer {
+      background-color: #222;
+      color: #ccc;
+      font-size: 8pt;
+      letter-spacing: 1px;
+      padding: 25px;
+      text-align: center;
+      text-transform: uppercase;
+    }
+    /* ====================== Navigation ====================== */
+    nav {
+      width: 100%;
+      height: 80px;
+      background-color: #252831;
+      text-align:center;
+    }
+    nav h1 {
+      margin: auto;
+    }
+    nav h1 a {
+      color: #fff;
+      font-size: 14pt;
+      font-weight: 200;
+      letter-spacing: 10px;
+      text-transform: uppercase;
+    }
+    .skip-link {
+      position: absolute;
+      padding: 5px;
+      top: -40px;
+      left: 0;
+      display: block;
+      width: 180px;
+      background-color: red;
+      font-weight: bold;
+    }
+    .skip-link:focus {
+      top: 0;
+      color: white;
+    }
+    /* ====================== Restaurant Filtering ====================== */
+    .filter-options {
+      display: flex;
+      flex-flow: row wrap;
+      width: 100%;
+      background-color: #3397DB;
+      margin-bottom: 10px;
+      justify-content: center;
+    }
+    .filter-options label {
+      position: absolute;
+      left: -9999px;
+    }
+    .filter-options h2 {
+      color: #090909;
+      font-size: 1rem;
+      font-weight: normal;
+      line-height: 1;
+      margin: 0 20px;
+      align-self: center;
+      width: 100%;
+      text-align: center;
+    }
+    .filter-options select {
+      background-color: white;
+      border: 1px solid #fff;
+      font-family: Arial,sans-serif;
+      font-size: 11pt;
+      height: 35px;
+      letter-spacing: 0;
+      margin: 10px;
+      padding: 0 10px;
+      width: 100%;
+    }
+  </style>
 </head>
 
 <body>
@@ -36,10 +159,8 @@
       <ul id="restaurants-list"></ul>
     </section>
   </main>
-  <script type="application/javascript" src="js/idb.js"></script>
-  <script type="application/javascript" charset="utf-8" src="js/idb-handler.js"></script>
-  <script type="application/javascript" charset="utf-8" src="js/dbhelper.js"></script>
-  <script type="application/javascript" charset="utf-8" src="js/main.js"></script>
+  <!-- <script type="application/javascript" src="js/lazyload.min.js"></script> -->
+  <script type="application/javascript" src="js/index.js"></script>
   <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAxy7zODPGgI8dfLSVr9X3itzDycXFKRys&libraries=places&callback=initMap"></script>
 
 
