@@ -11,8 +11,8 @@ const browserSync = require('browser-sync').create();
 
 // Little note, the script will work fine if you remove 'js/lazyload.js' from jsMainSource and jsRestaurantSource
 // and get Lazyload to load from the HTML ( like any normal scripts )
-const JsMainSource = ['js/lazyload.js', 'js/idb.js', 'js/idb-handler.js', 'js/dbhelper.js', 'js/main.js'];
-const jsRestaurantSource = ['js/lazyload.js', 'js/idb.js', 'js/idb-handler.js', 'js/dbhelper.js', 'js/restaurant_info.js'];
+const JsMainSource = ['js/idb.js', 'js/idb-handler.js', 'js/dbhelper.js', 'js/main.js'];
+const jsRestaurantSource = ['js/idb.js', 'js/idb-handler.js', 'js/dbhelper.js', 'js/restaurant_info.js'];
 const commonSources = ['index.html', 'restaurant.html', 'skeleton.html', 'sw.js'];
 let buildPath = 'builds/development';
 

@@ -1,5 +1,5 @@
-let currentCacheName = "static-v2";
-let dynamicCacheName = "dynamic-v2";
+let currentCacheName = "static-v3";
+let dynamicCacheName = "dynamic-v3";
 const fallbackUrl = "/img/default.svg";
 
 self.addEventListener("install", (event) => {
@@ -29,7 +29,7 @@ self.addEventListener("activate", (event) => {
                     return caches.delete(cacheData);
                 })
             );
-        })),   
+        })) 
     );
 })
 
