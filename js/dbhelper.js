@@ -19,8 +19,10 @@ class DBHelper {
    */
   static fetchRestaurants(callback) {
     idbHandler.readIdbData('restaurants').then(restaurants => {
-      if (restaurants.length) {
-          // if restaurants objectStore contains something get data from the database
+      if (restaurants.length > 1) {
+          /* if the first load of the site happens on a restaurant page, there'll only be one item in the database,
+          => making sure that all restaurants are there first before using the database 
+          */
           return callback(null, restaurants);
         } else {
           return fetch(DBHelper.DATABASE_URL).then((data) => {
@@ -32,7 +34,6 @@ class DBHelper {
             return data.json().then((responseData) => {
               // if data is recieved, populate the database first
               responseData.forEach(restaurant => idbHandler.storeIdbData('restaurants', restaurant));
-      
               callback(null, responseData);
             })
           });
