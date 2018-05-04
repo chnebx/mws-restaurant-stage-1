@@ -11,10 +11,11 @@ const source = require('vinyl-source-stream');
 const babelify = require('babelify');
 const buffer = require('vinyl-buffer');
 const gulpif = require('gulp-if');
+const htmlmin = require('gulp-htmlmin');
 
-const JsMainSource = ['js/idb.js', 'js/idb-handler.js', 'js/dbhelper.js', 'js/main.js'];
-const jsRestaurantSource = ['js/idb.js', 'js/idb-handler.js', 'js/dbhelper.js', 'js/restaurant_info.js'];
-const commonSources = ['index.html', 'restaurant.html', 'skeleton.html', 'manifest.json', 'sw.js'];
+const commonSources = ['manifest.json', 'sw.js'];
+const htmlSources = ['index.html', 'restaurant.html', 'skeleton.html'];
+
 let buildPath = 'builds/development';
 let env = process.env.NODE_ENV || 'development';
 let server;
@@ -78,6 +79,12 @@ gulp.task('common', ()=> {
         .pipe(gulp.dest(`${buildPath}`));
 });
 
+gulp.task('html', () => {
+    gulp.src(htmlSources)
+        .pipe(gulpif(env === 'production', htmlmin({collapseWhitespace: true, minifyCSS: true})))
+        .pipe(gulp.dest(`${buildPath}`));
+})
+
 gulp.task('images', () => {
     gulp.src('img/**/*', { base: 'img'})
         .pipe(gulp.dest(`${buildPath}/img`));
@@ -86,8 +93,9 @@ gulp.task('images', () => {
 gulp.task('watch', ['serve'], () => {
     gulp.watch('js/*.js', ['scripts-watch']);
     gulp.watch('css/styles.css', ['css']);
+    gulp.watch(htmlSources, ['html']);
     gulp.watch(commonSources, ['common'])
         .on('change', browserSync.reload);
 });
 
-gulp.task('default', ['common', 'images', 'scripts', 'css', 'watch', 'serve']);
+gulp.task('default', ['html', 'common', 'images', 'scripts', 'css', 'watch', 'serve']);
