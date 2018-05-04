@@ -1,7 +1,5 @@
 const gulp = require('gulp');
 const gulpUtil = require('gulp-util');
-const babel = require('gulp-babel');
-const concat = require('gulp-concat');
 const sourcemaps = require('gulp-sourcemaps');
 const uglify = require('gulp-uglify');
 const rename = require('gulp-rename');
@@ -12,16 +10,26 @@ const browserify = require('browserify');
 const source = require('vinyl-source-stream');
 const babelify = require('babelify');
 const buffer = require('vinyl-buffer');
-const uglifyify = require('uglifyify');
+const gulpif = require('gulp-if');
 
 const JsMainSource = ['js/idb.js', 'js/idb-handler.js', 'js/dbhelper.js', 'js/main.js'];
 const jsRestaurantSource = ['js/idb.js', 'js/idb-handler.js', 'js/dbhelper.js', 'js/restaurant_info.js'];
 const commonSources = ['index.html', 'restaurant.html', 'skeleton.html', 'manifest.json', 'sw.js'];
 let buildPath = 'builds/development';
+let env = process.env.NODE_ENV || 'development';
+let server;
+
+if (env === 'development') {
+    buildPath = 'builds/development';
+    server = './builds/development';
+} else if (env === 'production') {
+    buildPath = 'builds/dist';
+    server = './builds/dist';
+}
 
 gulp.task('serve', () => {
     browserSync.init({
-        server: './builds/development',
+        server: server,
         port: 5000
     });
 });
@@ -33,10 +41,10 @@ gulp.task('scripts', () => {
         .bundle()
         .pipe(source('index.js'))
         .pipe(buffer())
-        // .pipe(sourcemaps.init())
-        .pipe(uglify())
-        // .on('error', gulpUtil.log)
-        // .pipe(sourcemaps.write())
+        .pipe(gulpif(env === 'development', sourcemaps.init({loadMaps: true})))
+        .pipe(gulpif(env === 'production', uglify()))
+        .on('error', gulpUtil.log)
+        .pipe(gulpif(env === 'development', sourcemaps.write()))
         .pipe(gulp.dest(`${buildPath}/js`));
 
     const restaurantScript = browserify('./js/restaurant_info', {debug: true})
