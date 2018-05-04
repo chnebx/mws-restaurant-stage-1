@@ -1,3 +1,5 @@
+const idb = require('./idb');
+
 /**
  * Create the database for storing visited restaurants
  */
@@ -40,3 +42,8 @@ const getDbItem = (objStore, itemId) => {
         return store.get(parseInt(itemId));
     })
 }
+
+module.exports.checkDatabase = checkDatabase;
+module.exports.storeIdbData = storeIdbData;
+module.exports.readIdbData = readIdbData;
+module.exports.getDbItem = getDbItem;
