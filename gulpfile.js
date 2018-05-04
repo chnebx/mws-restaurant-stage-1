@@ -52,10 +52,10 @@ gulp.task('scripts', () => {
         .bundle()
         .pipe(source('restaurant.js'))
         .pipe(buffer())
-        // .pipe(sourcemaps.init())
-        .pipe(uglify())
-        // .on('error', gulpUtil.log)
-        // .pipe(sourcemaps.write())
+        .pipe(gulpif(env === 'development', sourcemaps.init({loadMaps: true})))
+        .pipe(gulpif(env === 'production', uglify()))
+        .on('error', gulpUtil.log)
+        .pipe(gulpif(env === 'development', sourcemaps.write()))
         .pipe(gulp.dest(`${buildPath}/js`));
 
     return merge(mainScript, restaurantScript);
@@ -68,7 +68,7 @@ gulp.task('scripts-watch', ['scripts'], (done) => {
 
 gulp.task('css', () => {
     gulp.src('css/*.css')
-        .pipe(cssClean())
+        .pipe(gulpif(env === 'production', cssClean()))
         .pipe(gulp.dest(`${buildPath}/css`))
         .pipe(browserSync.stream())
 });
