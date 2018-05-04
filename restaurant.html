@@ -103,7 +103,6 @@
     background-color: #eee;
     font-size: 17px;
     margin: 0;
-    width: 100%;
     display: flex;
     flex-flow: row wrap;
     /* offsetting the breadcrumb nav list */
@@ -150,11 +149,6 @@
 
   <!-- Beginning main -->
   <main id="maincontent">
-    <!-- Beginning map -->
-    <section id="map-container">
-      <div id="map" role="application"></div>
-    </section>
-    <!-- End map -->
     <!-- Beginning restaurant -->
     <section id="restaurant-container" tabindex="-1">
       <h2 id="restaurant-name"></h2>
@@ -175,7 +169,12 @@
     <!-- End reviews -->
   </main>
   <!-- End main -->
-
+  <!-- Beginning map -->
+  <section id="map-container">
+      <!-- <button class="show-map-btn">Show Map</button> -->
+      <div id="map" role="application"></div>
+  </section>
+  <!-- End map -->
   <!-- Beginning footer -->
   <footer id="footer">
     Copyright (c) 2017 <a href="/"><strong>Restaurant Reviews</strong></a> All Rights Reserved.
