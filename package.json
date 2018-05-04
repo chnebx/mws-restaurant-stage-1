@@ -25,6 +25,7 @@
     "eslint-plugin-import": "^2.11.0",
     "gulp": "^3.9.1",
     "gulp-clean-css": "^3.9.3",
+    "gulp-htmlmin": "^4.0.0",
     "gulp-if": "^2.0.2",
     "gulp-rename": "^1.2.2",
     "gulp-sourcemaps": "^2.6.4",
