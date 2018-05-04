@@ -1,3 +1,5 @@
+const idbHandler = require('./idb-handler');
+
 /**
  * Common database helper functions.
  */
@@ -16,7 +18,7 @@ class DBHelper {
    * Fetch all restaurants.
    */
   static fetchRestaurants(callback) {
-    readIdbData('restaurants').then(restaurants => {
+    idbHandler.readIdbData('restaurants').then(restaurants => {
       if (restaurants.length) {
           // if restaurants objectStore contains something get data from the database
           return callback(null, restaurants);
@@ -29,7 +31,7 @@ class DBHelper {
             }
             return data.json().then((responseData) => {
               // if data is recieved, populate the database first
-              responseData.forEach(restaurant => storeIdbData('restaurants', restaurant));
+              responseData.forEach(restaurant => idbHandler.storeIdbData('restaurants', restaurant));
       
               callback(null, responseData);
             })
@@ -37,6 +39,7 @@ class DBHelper {
         }
       })
       .catch((err) => {
+        console.error(err);
         const error = (`Request failed. Returned status of ${err.status}`);
         callback(error, null);
       });
@@ -47,7 +50,7 @@ class DBHelper {
    */
   static fetchRestaurantById(id, callback) {
     // fetch all restaurants with proper error handling.
-    getDbItem('restaurants', id).then(restaurant => {
+    idbHandler.getDbItem('restaurants', id).then(restaurant => {
       if (restaurant) {
         // if restaurants objectStore contains the specified restaurant
         return callback(null, restaurant);
@@ -60,7 +63,7 @@ class DBHelper {
           }
           return data.json().then((responseData) => {
             // if data is recieved, populate the database first
-            storeIdbData('restaurants', responseData);
+            idbHandler.storeIdbData('restaurants', responseData);
     
             callback(null, responseData);
           })
@@ -205,3 +208,5 @@ class DBHelper {
   }
 
 }
+
+module.exports = DBHelper;
