@@ -8,12 +8,15 @@ const rename = require('gulp-rename');
 const cssClean = require('gulp-clean-css');
 const merge = require('merge-stream');
 const browserSync = require('browser-sync').create();
+const browserify = require('browserify');
+const source = require('vinyl-source-stream');
+const babelify = require('babelify');
+const buffer = require('vinyl-buffer');
+const uglifyify = require('uglifyify');
 
-// Little note, the script will work fine if you remove 'js/lazyload.js' from jsMainSource and jsRestaurantSource
-// and get Lazyload to load from the HTML ( like any normal scripts )
 const JsMainSource = ['js/idb.js', 'js/idb-handler.js', 'js/dbhelper.js', 'js/main.js'];
 const jsRestaurantSource = ['js/idb.js', 'js/idb-handler.js', 'js/dbhelper.js', 'js/restaurant_info.js'];
-const commonSources = ['index.html', 'restaurant.html', 'skeleton.html', 'sw.js'];
+const commonSources = ['index.html', 'restaurant.html', 'skeleton.html', 'manifest.json', 'sw.js'];
 let buildPath = 'builds/development';
 
 gulp.task('serve', () => {
@@ -24,26 +27,27 @@ gulp.task('serve', () => {
 });
 
 gulp.task('scripts', () => {
-    const mainScript = gulp.src(JsMainSource)
-        .pipe(sourcemaps.init())
-        .pipe(concat('index.js'))
-        .pipe(babel({
-            presets: ['env']
-        }))
-        .pipe(uglify())
-        .on('error', gulpUtil.log)
-        .pipe(sourcemaps.write())
-        .pipe(gulp.dest(`${buildPath}/js`))
 
-    const restaurantScript = gulp.src(jsRestaurantSource)
-        .pipe(sourcemaps.init())
-        .pipe(concat('restaurant.js'))
-        .pipe(babel({
-            presets: ['env']
-        }))
+    const mainScript = browserify('./js/main', {debug: true})
+        .transform("babelify", {presets: ["babel-preset-env"]})
+        .bundle()
+        .pipe(source('index.js'))
+        .pipe(buffer())
+        // .pipe(sourcemaps.init())
         .pipe(uglify())
-        .on('error', gulpUtil.log)
-        .pipe(sourcemaps.write())
+        // .on('error', gulpUtil.log)
+        // .pipe(sourcemaps.write())
+        .pipe(gulp.dest(`${buildPath}/js`));
+
+    const restaurantScript = browserify('./js/restaurant_info', {debug: true})
+        .transform("babelify", {presets: ["babel-preset-env"]})
+        .bundle()
+        .pipe(source('restaurant.js'))
+        .pipe(buffer())
+        // .pipe(sourcemaps.init())
+        .pipe(uglify())
+        // .on('error', gulpUtil.log)
+        // .pipe(sourcemaps.write())
         .pipe(gulp.dest(`${buildPath}/js`));
 
     return merge(mainScript, restaurantScript);
