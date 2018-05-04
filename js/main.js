@@ -1,3 +1,5 @@
+const DBHelper = require('./dbhelper');
+const LazyLoad = require('./lazyload.min');
 let restaurants,
   neighborhoods,
   cuisines
@@ -112,8 +114,12 @@ const resetRestaurants = (restaurants) => {
   ul.innerHTML = '';
 
   // Remove all map markers
-  self.markers.forEach(m => m.setMap(null));
-  self.markers = [];
+  if (self.markers) {
+    markers.forEach(m => m.setMap(null));
+    //self.markers.forEach(m => m.setMap(null));
+    markers = [];
+    // self.markers = [];
+  }
   self.restaurants = restaurants;
 }
 
@@ -184,7 +190,8 @@ const addMarkersToMap = (restaurants = self.restaurants) => {
     google.maps.event.addListener(marker, 'click', () => {
       window.location.href = marker.url
     });
-    self.markers.push(marker);
+    // self.markers.push(marker);
+    markers.push(marker);
   });
 }
 
