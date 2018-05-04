@@ -1,3 +1,4 @@
+const DBHelper = require('./dbhelper');
 let restaurant;
 var map;
 
