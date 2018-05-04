@@ -1,5 +1,11 @@
 @charset "utf-8";
 /* CSS Document */
+/* ====================== Navigation ====================== */
+
+#breadcrumb {
+  width: 100%;
+}
+
 
 /* ====================== Map ====================== */
 
@@ -235,7 +241,7 @@ are less prominent than the main title */
   display: block;
   height: 200px;
   position: relative;
-  top: 125px;
+  /* top: 125px; */
   width: 100%;
 }
 
@@ -244,6 +250,7 @@ are less prominent than the main title */
   background-color: #ccc;
   height: 100%;
   width: 100%;
+  display: block;
 }
 
 
@@ -514,7 +521,7 @@ caption {
     position: fixed;
     right: 0;
     top: 80px;
-    height: 87%;
+    height: 100%;
   }
 
 
