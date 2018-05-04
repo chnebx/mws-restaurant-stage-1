@@ -17,8 +17,9 @@
   },
   "homepage": "https://github.com/chnebx/mws-restaurant-stage-1#readme",
   "devDependencies": {
-    "babel-core": "^6.26.0",
+    "babel-core": "^6.26.3",
     "babel-preset-env": "^1.6.1",
+    "babelify": "^8.0.0",
     "browser-sync": "^2.23.7",
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-plugin-import": "^2.11.0",
@@ -30,6 +31,14 @@
     "gulp-sourcemaps": "^2.6.4",
     "gulp-uglify": "^3.0.0",
     "gulp-util": "^3.0.8",
-    "merge-stream": "^1.0.1"
+    "merge-stream": "^1.0.1",
+    "uglifyify": "^5.0.0",
+    "vinyl-buffer": "^1.0.1"
+  },
+  "dependencies": {
+    "browserify": "^16.2.0",
+    "idb": "^2.1.1",
+    "vanilla-lazyload": "^8.7.1",
+    "vinyl-source-stream": "^2.0.0"
   }
 }
