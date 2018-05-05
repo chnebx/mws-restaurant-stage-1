@@ -2,6 +2,7 @@ const gulp = require('gulp');
 const gulpUtil = require('gulp-util');
 const sourcemaps = require('gulp-sourcemaps');
 const uglify = require('gulp-uglify');
+const babel = require('gulp-babel');
 const rename = require('gulp-rename');
 const cssClean = require('gulp-clean-css');
 const merge = require('merge-stream');
@@ -13,7 +14,7 @@ const buffer = require('vinyl-buffer');
 const gulpif = require('gulp-if');
 const htmlmin = require('gulp-htmlmin');
 
-const commonSources = ['manifest.json', 'sw.js'];
+const commonSources = ['manifest.json'];
 const htmlSources = ['index.html', 'restaurant.html', 'skeleton.html'];
 
 let buildPath = 'builds/development';
@@ -79,6 +80,15 @@ gulp.task('common', ()=> {
         .pipe(gulp.dest(`${buildPath}`));
 });
 
+gulp.task('sw', () => {
+    gulp.src('sw.js')
+        .pipe(babel({
+            presets: ['env']
+        }))
+        .pipe(gulpif(env === 'production', uglify()))
+        .pipe(gulp.dest(`${buildPath}`));
+})
+
 gulp.task('html', () => {
     gulp.src(htmlSources)
         .pipe(gulpif(env === 'production', htmlmin({collapseWhitespace: true, minifyCSS: true})))
@@ -94,8 +104,10 @@ gulp.task('watch', ['serve'], () => {
     gulp.watch('js/*.js', ['scripts-watch']);
     gulp.watch('css/styles.css', ['css']);
     gulp.watch(htmlSources, ['html']);
+    gulp.watch('sw.js', ['sw'])
+        .on('change', browserSync.reload);
     gulp.watch(commonSources, ['common'])
         .on('change', browserSync.reload);
 });
 
-gulp.task('default', ['html', 'common', 'images', 'scripts', 'css', 'watch', 'serve']);
+gulp.task('default', ['html', 'common', 'images', 'sw', 'scripts', 'css', 'watch', 'serve']);
