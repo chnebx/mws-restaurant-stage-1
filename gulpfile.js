@@ -13,6 +13,7 @@ const babelify = require('babelify');
 const buffer = require('vinyl-buffer');
 const gulpif = require('gulp-if');
 const htmlmin = require('gulp-htmlmin');
+const webp = require('gulp-webp');
 
 const commonSources = ['manifest.json'];
 const htmlSources = ['index.html', 'restaurant.html', 'skeleton.html'];
@@ -98,6 +99,12 @@ gulp.task('html', () => {
 gulp.task('images', () => {
     gulp.src('img/**/*', { base: 'img'})
         .pipe(gulp.dest(`${buildPath}/img`));
+});
+
+gulp.task('webp', () => {
+    gulp.src('img/photos/small/*.jpg')
+        .pipe(webp())
+        .pipe(gulp.dest('img/photos/small/'));
 });
 
 gulp.task('watch', ['serve'], () => {
