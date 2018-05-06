@@ -22,6 +22,10 @@ let buildPath = 'builds/development';
 let env = process.env.NODE_ENV || 'development';
 let server;
 
+if (process.argv[2] === '-production') {
+    env = "production";
+}
+
 if (env === 'development') {
     buildPath = 'builds/development';
     server = './builds/development';
