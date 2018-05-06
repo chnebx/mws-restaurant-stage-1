@@ -143,14 +143,25 @@ const createRestaurantHTML = (restaurant) => {
   const imgWrapper = document.createElement('div');
   imgWrapper.classList.add('img-wrapper');
 
+  const picture = document.createElement('picture');
+  const sourceWebp = document.createElement('source');
+  const sourceJpeg = document.createElement('source');
   const image = document.createElement('img');
+
+  imgWrapper.appendChild(picture)
   image.className = 'restaurant-img';
   let imgUrl = DBHelper.imageUrlForRestaurant(restaurant);
   image.setAttribute('data-src', imgUrl.small);
-  imgWrapper.append(image);
-  // image.src = imgUrl.small;
+
+  sourceWebp.setAttribute('srcset', imgUrl.webp);
+  sourceJpeg.setAttribute('srcset', imgUrl.small);
+
+  picture.appendChild(sourceWebp);
+  picture.appendChild(sourceJpeg);
+  picture.append(image);
 
   image.setAttribute('alt', DBHelper.imageDescriptionForRestaurant(restaurant));
+  imgWrapper.append(picture);
   li.append(imgWrapper);
 
   const name = document.createElement('h2');
