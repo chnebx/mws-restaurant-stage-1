@@ -143,24 +143,26 @@ const createRestaurantHTML = (restaurant) => {
   const imgWrapper = document.createElement('div');
   imgWrapper.classList.add('img-wrapper');
 
+  // Create the picture tag and all its components
   const picture = document.createElement('picture');
   const sourceWebp = document.createElement('source');
   const sourceJpeg = document.createElement('source');
   const image = document.createElement('img');
 
-  imgWrapper.appendChild(picture)
+  // Sets properties for the image
   image.className = 'restaurant-img';
   let imgUrl = DBHelper.imageUrlForRestaurant(restaurant);
   image.setAttribute('data-src', imgUrl.small);
 
+  //define source sets for sources elements
   sourceWebp.setAttribute('srcset', imgUrl.webp);
   sourceJpeg.setAttribute('srcset', imgUrl.small);
+  image.setAttribute('alt', DBHelper.imageDescriptionForRestaurant(restaurant));
 
+  // Assembling all the picture components
   picture.appendChild(sourceWebp);
   picture.appendChild(sourceJpeg);
   picture.append(image);
-
-  image.setAttribute('alt', DBHelper.imageDescriptionForRestaurant(restaurant));
   imgWrapper.append(picture);
   li.append(imgWrapper);
 
