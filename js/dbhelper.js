@@ -179,9 +179,10 @@ class DBHelper {
   static imageUrlForRestaurant(restaurant) {
     // EDIT : I decided to return an object so as to provide different image sizes
     return {
-      original: `/img/${restaurant.photograph}.jpg`,
-      small: `/img/small/${restaurant.photograph}.jpg`,
-      medium: `/img/medium/${restaurant.photograph}.jpg`
+      original: `/img/photos/${restaurant.photograph}.jpg`,
+      small: `/img/small/photos/${restaurant.photograph}.jpg`,
+      medium: `/img/medium/photos/${restaurant.photograph}.jpg`,
+      webp: `/img/photos/small/${restaurant.photograph}.webp` 
     };
     
   }
