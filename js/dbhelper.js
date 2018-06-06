@@ -11,69 +11,61 @@ class DBHelper {
    */
   static get DATABASE_URL() {
     const port = 1337; // Change this to your server port
-    return `http://localhost:${port}/restaurants`;
+    return `http://localhost:${port}`;
   }
 
   /**
    * Fetch all restaurants.
    */
   static fetchRestaurants(callback) {
-    idbHandler.readIdbData('restaurants').then(restaurants => {
-      if (restaurants.length > 1) {
-          /* if the first load of the site happens on a restaurant page, there'll only be one item in the database,
-          => making sure that all restaurants are there first before using the database 
-          */
-          return callback(null, restaurants);
-        } else {
-          return fetch(DBHelper.DATABASE_URL).then((data) => {
-            // fetches data first to get content
-            if (!data.ok) {
-              const error = (`Request failed. Returned status of ${data.status}`);
-              callback(error, null);
-            }
-            return data.json().then((responseData) => {
-              // if data is recieved, populate the database first
-              responseData.forEach(restaurant => idbHandler.storeIdbData('restaurants', restaurant));
-              callback(null, responseData);
-            })
+    return fetch(`${DBHelper.DATABASE_URL}/restaurants/`).then((data) => {
+        // fetches data first to get content
+        if (!data.ok) {
+          return idbHandler.readIdbData("restaurants").then(restaurants => {
+            callback(null, restaurants);
           });
         }
-      })
-      .catch((err) => {
-        console.error(err);
-        const error = (`Request failed. Returned status of ${err.status}`);
-        callback(error, null);
+        return data.json().then((responseData) => {
+          // if data is recieved, populate the database first
+          responseData.forEach(restaurant => {
+            idbHandler.checkAndUpdateDatabase("restaurants", restaurant);
+          });
+          callback(null, responseData);
+        });
+    }).catch(err => {
+      return idbHandler.readIdbData("restaurants").then(restaurants => {
+        callback(null, restaurants);
       });
+    });
   }
-
+  
   /**
    * Fetch a restaurant by its ID.
    */
   static fetchRestaurantById(id, callback) {
     // fetch all restaurants with proper error handling.
-    idbHandler.getDbItem('restaurants', id).then(restaurant => {
-      if (restaurant) {
-        // if restaurants objectStore contains the specified restaurant
-        return callback(null, restaurant);
-      } else {
-        return fetch(`${DBHelper.DATABASE_URL}/${id}`).then((data) => {
-          // fetches data first to get content
-          if (!data.ok) {
-            const error = (`Request failed. Returned status of ${data.status}`);
-            callback(error, null);
+    return fetch(`${DBHelper.DATABASE_URL}/restaurants/${id}`).then((data) => {
+    // fetches data first to get content
+      if (!data.ok) {
+        return idbHandler.getDbItem("restaurants", id).then(restaurant => {
+          if (restaurant) {
+            // if restaurants objectStore contains the specified restaurant
+            return callback(null, restaurant);
           }
-          return data.json().then((responseData) => {
-            // if data is recieved, populate the database first
-            idbHandler.storeIdbData('restaurants', responseData);
-    
-            callback(null, responseData);
-          })
         });
       }
-    })
-    .catch((err) => {
-      const error = (`Request failed. Returned status of ${err.status}`);
-      callback(error, null);
+      return data.json().then((responseData) => {
+        // if data is recieved, populate the database first
+        idbHandler.checkAndUpdateDatabase('restaurants', responseData);
+        callback(null, responseData);
+      })
+    }).catch((err) => {
+      return idbHandler.getDbItem("restaurants", id).then(restaurant => {
+        if (restaurant) {
+          // if restaurants objectStore contains the specified restaurant
+          return callback(null, restaurant);
+        }
+      })
     });
   }
 
@@ -148,6 +140,46 @@ class DBHelper {
     });
   }
 
+  static fetchRestaurantReviews(id, callback) {
+    return fetch(`${DBHelper.DATABASE_URL}/reviews/?restaurant_id=${id}`).then((data) => {
+      if (!data.ok){
+        idbHandler.filterDbItemsByProperty("reviews", "restaurant_id", parseInt(id)).then(reviews => {
+          if (reviews.length){
+            return callback(null, reviews);
+          } else {
+            const error = (`Request failed. Returned status of ${data.status}`);
+            callback(error, null);
+          };
+        });
+      };
+      return data.json().then(responseData => {
+        responseData.forEach(review => {idbHandler.checkAndUpdateDatabase('reviews', review)});
+        callback(null, responseData);
+      })
+    }).catch(err => {
+      idbHandler.filterDbItemsByProperty("reviews", "restaurant_id", parseInt(id)).then(reviews => {
+        if (reviews.length){
+          return callback(null, reviews);
+        };
+      });
+    });
+  }
+
+  static postReview(data) {
+    return fetch("http://localhost:1337/reviews/", {
+      headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/json"
+      },
+      method: "POST",
+      body: JSON.stringify(data)
+    }).then((res) => {
+      res.json().then((data) => {
+        console.log(data);
+      })
+    })
+  }
+
   /**
    * Fetch all cuisines with proper error handling.
    */
@@ -180,13 +212,56 @@ class DBHelper {
     // EDIT : I decided to return an object so as to provide different image sizes
     return {
       original: `/img/photos/${restaurant.photograph}.jpg`,
-      small: `/img/small/photos/${restaurant.photograph}.jpg`,
-      medium: `/img/medium/photos/${restaurant.photograph}.jpg`,
+      small: `/img/photos/small/${restaurant.photograph}.jpg`,
+      medium: `/img/photos/medium/${restaurant.photograph}.jpg`,
       webp: `/img/photos/small/${restaurant.photograph}.webp` 
     };
-    
   }
   
+  static checkFavoriteStatus(id){
+    let isFavorite = false;
+    return fetch("http://localhost:1337/restaurants/?is_favorite=true")
+      .then(data => {
+        if (data) {
+          data.json().then(restaurants => {
+            restaurants.forEach(restaurant => {
+              if (restaurant.id === id){
+                console.log("restaurant found among the favourites");
+                isFavorite = true;
+              }
+            })
+          })
+        }
+      }).then(() => {
+        return isFavorite;
+      });
+  }
+  
+
+  static markFavorite(callback, id){
+    this.checkFavoriteStatus(id).then(found => {
+      console.log(found);
+      if (found){
+        return fetch(`http://localhost:1337/restaurants/${id}/?is_favorite=false`, {
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
+          },
+          method: "PUT"
+        }).then(() => {
+          callback(false);
+        });
+      } else {
+        return fetch(`http://localhost:1337/restaurants/${id}/?is_favorite=true`, {
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
+          },
+          method: "PUT"
+        }).then(() => {
+          callback(true);
+        });
+      }
+    });
+  }
   /**
    * Restaurant image attribute description.
    */
