@@ -137,9 +137,11 @@
     <nav>
       <h1><a href="/">Restaurant Reviews</a></h1>
     <!-- Beginning breadcrumb -->
-      <ol id="breadcrumb" >
-        <li><a href="/">Home</a></li>
-      </ol>
+      <div aria-label="Breadcrumb" role="navigation">
+        <ol id="breadcrumb" >
+          <li><a href="/">Home</a></li>
+        </ol>
+      </div>
     <!-- End breadcrumb -->
     <!-- Beginning skip link -->
       <a href="#restaurant-container" class="skip-link">Skip to main section</a>
@@ -154,6 +156,8 @@
     <!-- Beginning restaurant -->
     <section id="restaurant-container" tabindex="-1">
       <h2 id="restaurant-name"></h2>
+      <h4 class="fav"></h4>
+      <button id="favoritebtn">Mark as favorite</button>
       <picture>
         <img id="restaurant-img">
       </picture>
@@ -167,6 +171,30 @@
     <!-- Beginning reviews -->
     <section id="reviews-container">
       <ul id="reviews-list"></ul>
+    </section>
+
+    <section id="reviews-form">
+      <h3>Add a review :</h3>
+      <form>
+        <label for="input-name">Your name :</label>
+        <input type="text" placeholder="Please enter your name" name="username" id="input-name">
+        <label id="ratingstars">Rate this restaurant :</label>
+        <div class="star-rating" role="group" aria-labelledby="ratingstars">   
+          <input type="radio" name="rating" id="rating-5" value="5">
+          <label for="rating-5"><span>5 out of 5 stars</span></label>
+          <input type="radio" name="rating" id="rating-4" value="4">
+          <label for="rating-4"><span>4 out of 5 stars</span></label>
+          <input type="radio" name="rating" id="rating-3" value="3" checked>
+          <label for="rating-3"><span>3 out of 5 stars</span></label>
+          <input type="radio" name="rating" id="rating-2" value="2">
+          <label for="rating-2"><span>2 out of 5 stars</span></label>
+          <input type="radio" name="rating" id="rating-1" value="1">
+          <label for="rating-1"><span>1 out of 5 stars</span></label>
+        </div>
+        <label for="input-comments">Comments :</label>
+        <textarea name="comment" id="input-comments"></textarea>
+        <button type="submit" id="submit-btn" name="submitbtn">Submit</button>
+      </form>
     </section>
     <!-- End reviews -->
   </main>
