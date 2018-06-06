@@ -1,49 +1,76 @@
 const idb = require('./idb');
-
+let results = [];
 /**
  * Create the database for storing visited restaurants
  */
 
-const dbPromise = idb.open('restaurants-store', 1, (upgradeDb) => {
+const dbPromise = idb.open('restaurants-store', 2, (upgradeDb) => {
     switch(upgradeDb.oldVersion){
         case 0:
-        upgradeDb.createObjectStore('restaurants', {keyPath: "id"}); 
+        upgradeDb.createObjectStore('restaurants', {keyPath: "id"});
+        case 1:
+        upgradeDb.createObjectStore('reviews', {keyPath: "id"});
     }
 });
 
-const checkDatabase = (objStore) => {
+const createStoreTransaction = (objStore, type) => {
     return dbPromise.then((db) => {
-        let val = db.objectStoreNames.contains(objStore);
-        return val;
-    })
+        const tx = db.transaction(objStore, type);
+        const store = tx.objectStore(objStore);
+        return {store: store, transaction: tx};
+    });
+}
+
+const checkAndUpdateDatabase = (objStore, item) => {
+    return createStoreTransaction(objStore, 'readonly')
+        .then(data => data.store.get(item.id))
+        .then(value => {
+            if (value) {
+                if (JSON.stringify(item) === JSON.stringify(value)){
+                    return;
+                }
+            }
+            storeIdbData(objStore, item);     
+        }).catch(err => {
+            storeIdbData(objStore, item);
+        });
 }
 
 const storeIdbData = (objStore, data) => {
-    return dbPromise.then((db) => {
-        const tx = db.transaction(objStore, 'readwrite');
-        const store = tx.objectStore(objStore);
-        store.put(data);
-        return tx.complete;
-    });
+    return createStoreTransaction(objStore, 'readwrite')
+        .then(dataObj => {
+            dataObj.store.put(data)
+            return dataObj.transaction.complete;
+        });
 };
 
 const readIdbData = (objStore) => {
-    return dbPromise.then((db) => {
-        const tx = db.transaction(objStore, 'readonly');
-        const store = tx.objectStore(objStore);
-        return store.getAll();
-    });
+    return createStoreTransaction(objStore, 'readonly')
+        .then(data => data.store.getAll());     
 };
 
 const getDbItem = (objStore, itemId) => {
-    return dbPromise.then((db) => {
-        const tx = db.transaction(objStore, 'readonly');
-        const store = tx.objectStore(objStore);
-        return store.get(parseInt(itemId));
-    })
-}
+    return createStoreTransaction(objStore, 'readonly')
+        .then(data => data.store.get(parseInt(id)));
+};
 
-module.exports.checkDatabase = checkDatabase;
+const filterDbItemsByProperty = (objStore, property, value) => {
+    return createStoreTransaction(objStore, 'readonly')
+        .then(data => data.store.openCursor()).then(function getRestaurantReviews(cursor) {
+        if (!cursor) {
+            return;
+        }
+        if (cursor.value[property] === value) {
+            results.push(cursor.value);
+        }
+        return cursor.continue().then(getRestaurantReviews);
+    }).then(() => {
+        return results;
+    });
+};
+
+module.exports.checkAndUpdateDatabase = checkAndUpdateDatabase;
 module.exports.storeIdbData = storeIdbData;
 module.exports.readIdbData = readIdbData;
 module.exports.getDbItem = getDbItem;
+module.exports.filterDbItemsByProperty = filterDbItemsByProperty;
