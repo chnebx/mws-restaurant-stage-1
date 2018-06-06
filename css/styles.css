@@ -78,9 +78,7 @@
   background-color: #fff;
   border: 2px solid #ccc;
   font-family: Arial,sans-serif;
-  margin-left: 4%;
-  margin-top: 15px;
-  margin-bottom: 15px;
+  margin: 15px auto;
   padding: 0 30px 25px;
   text-align: center;
   width: 96%;
@@ -227,6 +225,108 @@ are less prominent than the main title */
 
 
 /* ====================== Restaurant Details ====================== */
+#favoritebtn {
+  order: 7;
+  background-color: #ff8e03;
+  border: 0;
+  width: 150px;
+  height: 40px;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.fav {
+  display: none;
+}
+
+form {
+  width: 90%;
+  height: auto;
+}
+
+input[type="text"], textarea {
+  display: block;
+}
+
+label {
+  display: inline-block;
+  margin: 8px 0 2px;
+  text-align: center;
+}
+
+/* label:last-of-type {
+  display: block;
+  margin: 10px auto 0;
+} */
+
+input[type="text"] {
+  width: 60%;
+  min-width: 200px;
+  max-width: 500px;
+  height: 30px;
+}
+
+textarea {
+  width: 100%;
+  height: 100px;
+}
+
+.star-rating {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+}
+
+.star-rating input {
+  position: absolute;
+  left: -9999px;
+}
+
+.star-rating label {
+  cursor: pointer;
+  position: relative;
+}
+
+.star-rating label span {
+  display: block;
+  width: 0;
+  position: absolute;
+  left: -9999px;
+}
+
+.star-rating label:before {
+  content: "\2605";
+  display: block;
+  font-size: 18px;
+  width: 30px;
+  color: #444;
+  opacity: 1;
+}
+
+.star-rating label:after {
+  content: "\2605";
+  display: block;
+  font-size: 18px;
+  width: 30px;
+  color: #f58500;
+  position: absolute;
+  opacity: 0;
+  top: 0;
+  left: 0;
+}
+
+.star-rating label:hover:after,
+.star-rating label:hover ~ label:after,
+.star-rating input:checked ~ label:after {
+  opacity: 1;
+}
+
+#submit-btn {
+  display: block;
+  margin: 10px auto 0;
+  width: 200px;
+  height: 30px;
+}
 
 .inside header {
   position: fixed;
@@ -256,7 +356,7 @@ are less prominent than the main title */
 
 .inside #footer {
   bottom: 0;
-  position: absolute;
+  /* position: absolute; */
   width: 100%;
 }
 
@@ -311,7 +411,8 @@ picture {
 
 
 #restaurant-container, 
-#reviews-container {
+#reviews-container,
+#reviews-form {
   border-bottom: 1px solid #d9d9d9;
   border-top: 1px solid #fff;
   width: 100%;
@@ -320,13 +421,12 @@ picture {
   align-items: center;
 }
 
-
 #restaurant-container {
   padding: 140px 20px 30px;
 }
 
 
-#reviews-container {
+#reviews-container, #reviews-form {
   padding: 30px 20px 30px;
 }
 
@@ -426,7 +526,8 @@ caption {
 
 
   #restaurant-container, 
-  #reviews-container {
+  #reviews-container,
+  #reviews-form {
     padding: 140px 10px 30px;
   }
 
@@ -446,7 +547,8 @@ caption {
   }
 
 
-  #reviews-container {
+  #reviews-container,
+  #reviews-form {
     padding-top: 30px;
     order: 2;
   }
@@ -502,14 +604,17 @@ caption {
 
 }
 
-@media screen and (min-width: 1000px) {
+@media screen and (min-width: 1460px) {
 
   #restaurant-container, 
-  #reviews-container {
+  #reviews-container,
+  #reviews-form {
     width: 60%;
-    flex-flow: column wrap;
   }
 
+  #restaurant-container {
+    justify-content: center;
+  }
 
   #breadcrumb {
     width: 60%;
@@ -526,10 +631,7 @@ caption {
 
 
   picture {
-    width: 70%;
     max-width: 600px;
-    margin-right: 0;
-    order: 2;
   }
 
 
@@ -542,20 +644,16 @@ caption {
 
   #restaurant-cuisine {
     max-width: 600px;
-    width: 70%;
-    margin-right: 0;
-    order: 3;
+    margin-right: 2%;
   }
 
 
   #restaurant-address {
-    order: 4;
+    max-width: 600px;
   }
 
 
   #restaurant-hours {
-    width: 90%;
-    order: 5;
     max-width: 600px;
     font-size: 1.2em;
   }
