@@ -1,6 +1,10 @@
 const DBHelper = require('./dbhelper');
 let restaurant;
+let reviews;
 var map;
+const form = document.getElementsByTagName("form")[0];
+const favHeading = document.getElementsByClassName('fav')[0];
+
 
 /**
  * Initialize Google map, called from HTML.
@@ -19,6 +23,16 @@ window.initMap = () => {
       DBHelper.mapMarkerForRestaurant(self.restaurant, self.map);
     }
   });
+}
+
+const showFavoriteStatus = (visible) => {
+  if (visible){
+    favHeading.style.display = "block";
+    favHeading.textContent = "You favourited this restaurant";
+  } else {
+    favHeading.style.display = "none";
+    favHeading.textContent = "";
+  }
 }
 
 /**
@@ -47,11 +61,33 @@ const fetchRestaurantFromURL = (callback) => {
 }
 
 /**
+ * Get current restaurant reviews.
+ */
+const fetchReviewsFromUrl = (callback) => {
+  const id= getParameterByName("id");
+  if (!id) { // no id found in URL
+    const error = 'No restaurant id in URL';
+    callback(error, null);
+  } else {
+    DBHelper.fetchRestaurantReviews(id, (error, reviews) => {
+      if (!reviews) {
+        console.error(error);
+        return;
+      }
+      return callback(null, reviews)
+    });
+  }
+}
+
+/**
  * Create restaurant HTML and add it to the webpage
  */
 const fillRestaurantHTML = (restaurant = self.restaurant) => {
   const name = document.getElementById('restaurant-name');
   name.innerHTML = restaurant.name;
+  if (restaurant['is-favorite'] === "true") {
+    showFavoriteStatus(true);
+  }
   const address = document.getElementById('restaurant-address');
   address.innerHTML = restaurant.address;
   const image = document.getElementById('restaurant-img');
@@ -84,7 +120,11 @@ const fillRestaurantHTML = (restaurant = self.restaurant) => {
     fillRestaurantHoursHTML();
   }
   // fill reviews
-  fillReviewsHTML();
+  fetchReviewsFromUrl((error, restauReviews) => {
+    self.reviews = restauReviews;
+    fillReviewsHTML();
+  });
+  
 }
 
 /**
@@ -110,9 +150,10 @@ const fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hour
 /**
  * Create all reviews HTML and add them to the webpage.
  */
-const fillReviewsHTML = (reviews = self.restaurant.reviews) => {
+// const fillReviewsHTML = (reviews = self.reviews) => {
+const fillReviewsHTML = (reviews = self.reviews) => {
   const container = document.getElementById('reviews-container');
-  const title = document.createElement('h2');
+  const title = document.createElement('h3');
   title.innerHTML = 'Reviews';
   container.appendChild(title);
 
@@ -139,7 +180,7 @@ const createReviewHTML = (review) => {
   li.appendChild(name);
 
   const date = document.createElement('p');
-  date.innerHTML = review.date;
+  date.innerHTML = review.updatedAt;
   li.appendChild(date);
 
   const rating = document.createElement('p');
@@ -183,3 +224,33 @@ const getParameterByName = (name, url) => {
     return '';
   return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
+
+let radioButtons = document.querySelectorAll("input[type='radio']");
+const favoriteBtn = document.getElementById("favoritebtn");
+
+favoriteBtn.addEventListener("click", (e) => {
+  DBHelper.markFavorite((favorite) => {
+    showFavoriteStatus(favorite);
+  }, parseInt(getParameterByName("id")))
+});
+
+form.addEventListener("submit", (e) => {
+  e.preventDefault();
+  // let chosenRating = document.querySelector('input[type="radio"]:checked').value;
+  let chosenRating;
+  for (let i=1; i < 6; i++){
+    let val = `rating-${i}`;
+    if (form[val].checked === true){
+      chosenRating = form[val].value;
+      break;
+    }
+  }
+  let restaurant_id = parseInt(getParameterByName("id"));
+  let reviewData = {
+    restaurant_id: restaurant_id,
+    name: form.username.value,
+    rating: chosenRating,
+    comments: form.comment.value
+  }
+  DBHelper.postReview(reviewData);
+})
