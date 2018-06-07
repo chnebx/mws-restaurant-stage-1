@@ -51,7 +51,7 @@ const readIdbData = (objStore) => {
 
 const getDbItem = (objStore, itemId) => {
     return createStoreTransaction(objStore, 'readonly')
-        .then(data => data.store.get(parseInt(id)));
+        .then(data => data.store.get(parseInt(itemId)));
 };
 
 const filterDbItemsByProperty = (objStore, property, value) => {
