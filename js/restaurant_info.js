@@ -4,6 +4,8 @@ let reviews;
 var map;
 const form = document.getElementsByTagName("form")[0];
 const favHeading = document.getElementsByClassName('fav')[0];
+let radioButtons = document.querySelectorAll("input[type='radio']");
+const favoriteBtn = document.getElementById("favoritebtn");
 
 
 /**
@@ -34,6 +36,16 @@ const showFavoriteStatus = (visible) => {
     favHeading.textContent = "";
   }
 }
+
+const handleFavButtonLabel = (favorited) => {
+  if (favorited) {
+    favoriteBtn.innerText = "Unfavorite this restaurant";
+    showFavoriteStatus(true);
+  } else {
+    favoriteBtn.innerText = "Favorite this restaurant";
+    showFavoriteStatus(false);
+  }
+};
 
 /**
  * Get current restaurant from page URL.
@@ -85,9 +97,11 @@ const fetchReviewsFromUrl = (callback) => {
 const fillRestaurantHTML = (restaurant = self.restaurant) => {
   const name = document.getElementById('restaurant-name');
   name.innerHTML = restaurant.name;
-  if (restaurant['is-favorite'] === "true") {
-    showFavoriteStatus(true);
-  }
+  DBHelper.checkFavoriteStatus(restaurant.id).then((favoriteStatus) => {
+    console.log(favoriteStatus);
+    showFavoriteStatus(favoriteStatus);
+    handleFavButtonLabel(favoriteStatus);
+  });
   const address = document.getElementById('restaurant-address');
   address.innerHTML = restaurant.address;
   const image = document.getElementById('restaurant-img');
@@ -225,13 +239,12 @@ const getParameterByName = (name, url) => {
   return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
 
-let radioButtons = document.querySelectorAll("input[type='radio']");
-const favoriteBtn = document.getElementById("favoritebtn");
-
 favoriteBtn.addEventListener("click", (e) => {
-  DBHelper.markFavorite((favorite) => {
-    showFavoriteStatus(favorite);
-  }, parseInt(getParameterByName("id")))
+  let restaurant_id = parseInt(getParameterByName("id"));
+  DBHelper.checkFavoriteStatus(restaurant_id)
+    .then(favoriteStatus => {
+      DBHelper.markFavorite(restaurant_id, !favoriteStatus, handleFavButtonLabel);
+    });
 });
 
 form.addEventListener("submit", (e) => {
