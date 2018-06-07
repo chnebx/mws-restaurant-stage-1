@@ -238,30 +238,17 @@ class DBHelper {
   }
   
 
-  static markFavorite(callback, id){
-    this.checkFavoriteStatus(id).then(found => {
-      console.log(found);
-      if (found){
-        return fetch(`http://localhost:1337/restaurants/${id}/?is_favorite=false`, {
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
-          },
-          method: "PUT"
-        }).then(() => {
-          callback(false);
-        });
-      } else {
-        return fetch(`http://localhost:1337/restaurants/${id}/?is_favorite=true`, {
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
-          },
-          method: "PUT"
-        }).then(() => {
-          callback(true);
-        });
-      }
-    });
-  }
+  static markFavorite(id, favoriteVal, callback){
+    return fetch(`http://localhost:1337/restaurants/${id}/?is_favorite=${favoriteVal}`, {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
+        },
+        method: "PUT"
+      }).then(() => {
+        callback(favoriteVal);
+      });
+    };
+
   /**
    * Restaurant image attribute description.
    */
