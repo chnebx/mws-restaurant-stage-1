@@ -237,6 +237,11 @@ are less prominent than the main title */
 
 .fav {
   display: none;
+  background-color: #f58500;
+  font-weight: bold;
+  color: #eee;
+  padding: 20px;
+  width: 100%;
 }
 
 form {
