@@ -239,12 +239,14 @@ class DBHelper {
   
 
   static markFavorite(id, favoriteVal, callback){
-    return fetch(`http://localhost:1337/restaurants/${id}/?is_favorite=${favoriteVal}`, {
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
-        },
-        method: "PUT"
-      }).then(() => {
+    return fetch(`http://localhost:1337/restaurants/${id}/`, {
+      headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/json"
+      },
+      method: "PUT",
+      body: JSON.stringify({"is_favorite" : favoriteVal})
+    }).then(() => {
         callback(favoriteVal);
       });
     };
