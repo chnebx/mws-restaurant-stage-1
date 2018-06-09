@@ -97,11 +97,16 @@ const fetchReviewsFromUrl = (callback) => {
 const fillRestaurantHTML = (restaurant = self.restaurant) => {
   const name = document.getElementById('restaurant-name');
   name.innerHTML = restaurant.name;
-  DBHelper.checkFavoriteStatus(restaurant.id).then((favoriteStatus) => {
-    console.log(favoriteStatus);
-    showFavoriteStatus(favoriteStatus);
-    handleFavButtonLabel(favoriteStatus);
-  });
+
+  // Checking if the restaurant is a favorited one
+  if (restaurant["is_favorite"]) {
+    showFavoriteStatus(true);
+    handleFavButtonLabel(true);
+  } else {
+    showFavoriteStatus(false);
+    handleFavButtonLabel(false);
+  }
+  
   const address = document.getElementById('restaurant-address');
   address.innerHTML = restaurant.address;
   const image = document.getElementById('restaurant-img');
