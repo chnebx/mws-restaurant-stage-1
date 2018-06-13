@@ -233,14 +233,17 @@ are less prominent than the main title */
   height: 40px;
   border-radius: 5px;
   text-align: center;
+  margin: 10px auto;
 }
 
 .fav {
   display: none;
   background-color: #f58500;
   font-weight: bold;
+  font-size: 20px;
+  text-align: center;
   color: #eee;
-  padding: 20px;
+  padding: 10px;
   width: 100%;
 }
 
