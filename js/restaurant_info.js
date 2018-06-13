@@ -1,6 +1,8 @@
 const DBHelper = require('./dbhelper');
 let restaurant;
 let reviews;
+let syncIdCount = 0;
+let favoriteStatus;
 var map;
 const form = document.getElementsByTagName("form")[0];
 const favHeading = document.getElementsByClassName('fav')[0];
@@ -46,6 +48,12 @@ const handleFavButtonLabel = (favorited) => {
     showFavoriteStatus(false);
   }
 };
+
+const handleFavoriteStatus = (activated) => {
+  favoriteStatus = activated;
+  showFavoriteStatus(activated);
+  handleFavButtonLabel(activated);
+}
 
 /**
  * Get current restaurant from page URL.
@@ -99,13 +107,7 @@ const fillRestaurantHTML = (restaurant = self.restaurant) => {
   name.innerHTML = restaurant.name;
 
   // Checking if the restaurant is a favorited one
-  if (restaurant["is_favorite"]) {
-    showFavoriteStatus(true);
-    handleFavButtonLabel(true);
-  } else {
-    showFavoriteStatus(false);
-    handleFavButtonLabel(false);
-  }
+  handleFavoriteStatus(restaurant["is_favorite"]);
   
   const address = document.getElementById('restaurant-address');
   address.innerHTML = restaurant.address;
@@ -246,15 +248,34 @@ const getParameterByName = (name, url) => {
 
 favoriteBtn.addEventListener("click", (e) => {
   let restaurant_id = parseInt(getParameterByName("id"));
-  DBHelper.checkFavoriteStatus(restaurant_id)
-    .then(favoriteStatus => {
-      DBHelper.markFavorite(restaurant_id, !favoriteStatus, handleFavButtonLabel);
-    });
+  favoriteStatus = !favoriteStatus;
+  let syncFavoriteData = {id: restaurant_id, favorited: favoriteStatus};
+  if (navigator.serviceWorker && window.SyncManager) {
+    console.log("syncing in works");
+    navigator.serviceWorker.ready
+      .then((sw) => {
+        DBHelper.syncFavorite(syncFavoriteData)
+          .then(() => sw.sync.register("favorite-sync"));
+      })
+      .then(() => handleFavoriteStatus(favoriteStatus));
+  } else {
+    DBHelper.checkFavoriteStatus(restaurant_id)
+      .then(favoriteStatus => {
+        DBHelper.markFavorite(restaurant_id, !favoriteStatus, handleFavoriteStatus);
+      }
+    );
+  }
+  
 });
 
 form.addEventListener("submit", (e) => {
   e.preventDefault();
-  // let chosenRating = document.querySelector('input[type="radio"]:checked').value;
+
+  // error handling
+  if (form.username.value.trim() === "" || form.comment.value.length < 2 ) {
+    return;
+  }
+
   let chosenRating;
   for (let i=1; i < 6; i++){
     let val = `rating-${i}`;
@@ -264,11 +285,26 @@ form.addEventListener("submit", (e) => {
     }
   }
   let restaurant_id = parseInt(getParameterByName("id"));
+
   let reviewData = {
     restaurant_id: restaurant_id,
     name: form.username.value,
     rating: chosenRating,
     comments: form.comment.value
   }
-  DBHelper.postReview(reviewData);
+
+  if (navigator.serviceWorker && window.SyncManager) {
+    console.log("syncing in works");
+    navigator.serviceWorker.ready
+      .then((sw) => {
+        reviewData.id = syncIdCount += 1;
+        reviewData.updatedAt = new Date();
+        const ul = document.getElementById('reviews-list');
+        ul.appendChild(createReviewHTML(reviewData));
+        DBHelper.postSyncReview(reviewData)
+          .then(() => sw.sync.register("review-sync"));
+      })
+  } else {
+    DBHelper.postReview(reviewData);
+  }
 })
