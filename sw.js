@@ -1,5 +1,8 @@
-let currentCacheName = "static-v3";
-let dynamicCacheName = "dynamic-v3";
+importScripts("js/idb.js");
+importScripts("./js/sw-utility.js");
+
+let currentCacheName = "static-v1";
+let dynamicCacheName = "dynamic-v1";
 const fallbackUrl = "/img/default.svg";
 
 self.addEventListener("install", (event) => {
@@ -94,3 +97,53 @@ self.addEventListener("fetch", (event) => {
         )
     )}
 )
+
+self.addEventListener("sync", (event) => {
+    if (event.tag === "review-sync") {
+        event.waitUntil(
+            readIdbData("sync-reviews")
+                .then(reviews => {
+                    console.log(reviews);
+                    reviews.forEach(review => {
+                        console.log(review);
+                        fetch("http://localhost:1337/reviews/", {
+                            headers: {
+                                "Accept": "application/json",
+                                "Content-Type": "application/json"
+                            },
+                            method: "POST",
+                            body: JSON.stringify({  
+                                restaurant_id: review["restaurant_id"],
+                                name: review.name,
+                                rating: review.rating,
+                                comments: review.comments   
+                            })
+                        })
+                        .then(() => deleteDbItem("sync-reviews", review.id));
+                    })
+                }
+            )
+        )
+    };
+    if (event.tag === "favorite-sync") {
+        event.waitUntil(
+            readIdbData("sync-favorite")
+                .then(data => {
+                    data.forEach(favoriteData => {
+                        console.log(favoriteData);
+                        fetch(`http://localhost:1337/restaurants/${favoriteData.id}/`, {
+                            headers: {
+                                "Accept": "application/json",
+                                "Content-Type": "application/json"
+                            },
+                            method: "PUT",
+                            body: JSON.stringify({"is_favorite" : favoriteData.favorited})
+                        })
+                        .then(() => deleteDbItem("sync-favorite", favoriteData.id));
+                    })
+                }
+            )
+        )
+    }
+
+});
