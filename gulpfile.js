@@ -68,7 +68,7 @@ gulp.task('scripts', () => {
     return merge(mainScript, restaurantScript);
 });
 
-gulp.task('scripts-watch', ['scripts'], (done) => {
+gulp.task('scripts-watch', ['scripts', 'sw-utility'], (done) => {
     browserSync.reload();
     done();
 });
@@ -92,6 +92,11 @@ gulp.task('sw', () => {
         }))
         .pipe(gulpif(env === 'production', uglify()))
         .pipe(gulp.dest(`${buildPath}`));
+})
+
+gulp.task('sw-utility', () => {
+    gulp.src(['idb.js', 'js/sw-utility.js'])
+        .pipe(gulp.dest(`${buildPath}/js`));
 })
 
 gulp.task('html', () => {
@@ -121,4 +126,4 @@ gulp.task('watch', ['serve'], () => {
         .on('change', browserSync.reload);
 });
 
-gulp.task('default', ['html', 'common', 'images', 'sw', 'scripts', 'css', 'watch', 'serve']);
+gulp.task('default', ['html', 'common', 'images', 'sw', 'sw-utility', 'scripts', 'css', 'watch', 'serve']);
