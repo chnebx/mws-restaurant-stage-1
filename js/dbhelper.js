@@ -166,18 +166,25 @@ class DBHelper {
   }
 
   static postReview(data) {
-    return fetch("http://localhost:1337/reviews/", {
-      headers: {
-        "Accept": "application/json",
-        "Content-Type": "application/json"
-      },
-      method: "POST",
-      body: JSON.stringify(data)
-    }).then((res) => {
-      res.json().then((data) => {
-        console.log(data);
+    idbHandler.storeIdbData("reviews", data)
+      .then(() => {
+        return fetch("http://localhost:1337/reviews/", {
+          headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json"
+          },
+          method: "POST",
+          body: JSON.stringify(data)
+        }).then((res) => {
+          res.json().then((data) => {
+            
+          })
+        })
       })
-    })
+  }
+
+  static postSyncReview(data) {
+    return idbHandler.storeIdbData("sync-reviews", data);
   }
 
   /**
@@ -223,33 +230,63 @@ class DBHelper {
     return fetch("http://localhost:1337/restaurants/?is_favorite=true")
       .then(data => {
         if (data) {
-          data.json().then(restaurants => {
-            restaurants.forEach(restaurant => {
-              if (restaurant.id === id){
-                console.log("restaurant found among the favourites");
-                isFavorite = true;
+          console.log(data);
+          data.json()
+            .then(restaurants => {
+              restaurants.forEach(restaurant => {
+                if (restaurant.id === id){
+                  isFavorite = true;
+                }
+              })
+            })
+            .catch(err => {
+              return idbHandler.getDbItem("restaurants", id)
+                .then(restaurant => {
+                  if (restaurant["is_favorite"]) {
+                    console.log("found in the database but not online");
+                    isFavorite = true;
+                  }
+                  return isFavorite;
+                })
+              }).then(() => {
+                return isFavorite;
+                })
               }
             })
+        .catch(err => {
+        return idbHandler.getDbItem("restaurants", id)
+          .then(restaurant => {
+            if (restaurant["is_favorite"]) {
+              console.log("found in the database but not online");
+              isFavorite = true;
+            }
+            return isFavorite;
           })
-        }
-      }).then(() => {
-        return isFavorite;
-      });
+        })
+        .then(() => {
+          return isFavorite;
+        });
   }
   
 
   static markFavorite(id, favoriteVal, callback){
-    return fetch(`http://localhost:1337/restaurants/${id}/`, {
+    fetch(`http://localhost:1337/restaurants/${id}/`, {
       headers: {
         "Accept": "application/json",
         "Content-Type": "application/json"
       },
       method: "PUT",
       body: JSON.stringify({"is_favorite" : favoriteVal})
-    }).then(() => {
+      })
+      .then(() => {
         callback(favoriteVal);
-      });
+      })
+      .catch(err => { console.log(err);})    
     };
+
+    static syncFavorite(data) {
+      return idbHandler.storeIdbData("sync-favorite", data);
+    }
 
   /**
    * Restaurant image attribute description.
