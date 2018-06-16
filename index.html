@@ -3,12 +3,6 @@
 
 <head>
   <meta charset="UTF-8">
-  <link rel="stylesheet" src="//normalize-css.googlecode.com/svn/trunk/normalize.css" />
-  <link rel="preload" href="css/styles.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-  <link rel="manifest" href="/manifest.json">
-  <meta name="theme-color" content="#252831">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Restaurant Reviews</title>
   <style>
     * {
       box-sizing: border-box;
@@ -97,7 +91,67 @@
       top: 0;
       color: white;
     }
+
+    /* ====================== Map ====================== */
+
+    #map {
+      height: 400px;
+      width: 100%;
+      background-color: #ccc;
+      display: none;
+    }
+
+    .show-map-btn {
+      display: block;
+      background-color: orange;
+      padding: 5px 2px;
+      position: absolute;
+      top: 50px;
+    }
+
+    /* ====================== Restaurant Filtering ====================== */
+
+    .filter-options {
+      display: flex;
+      flex-flow: row wrap;
+      width: 100%;
+      background-color: #3397DB;
+      margin-bottom: 10px;
+      justify-content: center;
+    }
+    .filter-options label {
+      position: absolute;
+      left: -9999px;
+    }
+    .filter-options h2 {
+      color: #090909;
+      font-size: 1rem;
+      font-weight: normal;
+      line-height: 1;
+      margin: 0 20px;
+      align-self: center;
+      width: 100%;
+      text-align: center;
+    }
+    .filter-options select {
+      background-color: white;
+      border: 1px solid #fff;
+      font-family: Arial,sans-serif;
+      font-size: 11pt;
+      height: 35px;
+      letter-spacing: 0;
+      margin: 10px;
+      padding: 0 10px;
+      width: 100%;
+    }
   </style>
+  <link rel="stylesheet" src="//normalize-css.googlecode.com/svn/trunk/normalize.css" />
+  <link rel="preload" href="css/styles.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="manifest" href="/manifest.json">
+  <script defer type="application/javascript" src="js/index.js"></script>
+  <meta name="theme-color" content="#252831">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Restaurant Reviews</title>
 </head>
 
 <body>
@@ -128,14 +182,12 @@
       <ul id="restaurants-list"></ul>
     </section>
   </main>
-  <script type="application/javascript" src="js/index.js"></script>
-  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAxy7zODPGgI8dfLSVr9X3itzDycXFKRys&libraries=places&callback=initMap"></script>
-
 
   <footer id="footer">
     Copyright (c) 2017 <a href="/"><strong>Restaurant Reviews</strong></a> All Rights Reserved.
   </footer>
 
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAxy7zODPGgI8dfLSVr9X3itzDycXFKRys&libraries=places&callback=initMap"></script>
 </body>
 
 </html>
