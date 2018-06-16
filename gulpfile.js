@@ -95,7 +95,7 @@ gulp.task('sw', () => {
 })
 
 gulp.task('sw-utility', () => {
-    gulp.src(['idb.js', 'js/sw-utility.js'])
+    gulp.src(['js/idb.js', 'js/sw-utility.js'])
         .pipe(gulp.dest(`${buildPath}/js`));
 })
 
