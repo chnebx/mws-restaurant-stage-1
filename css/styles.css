@@ -7,60 +7,6 @@
 }
 
 
-/* ====================== Map ====================== */
-
-#map {
-  height: 400px;
-  width: 100%;
-  background-color: #ccc;
-  display: none;
-}
-
-.show-map-btn {
-  display: block;
-  background-color: orange;
-  padding: 5px 2px;
-  position: absolute;
-  top: 50px;
-}
-
-
-/* ====================== Restaurant Filtering ====================== */
-.filter-options {
-  display: flex;
-  flex-flow: row wrap;
-  width: 100%;
-  background-color: #3397DB;
-  margin-bottom: 10px;
-  justify-content: center;
-}
-.filter-options label {
-  position: absolute;
-  left: -9999px;
-}
-.filter-options h2 {
-  color: #090909;
-  font-size: 1rem;
-  font-weight: normal;
-  line-height: 1;
-  margin: 0 20px;
-  align-self: center;
-  width: 100%;
-  text-align: center;
-}
-.filter-options select {
-  background-color: white;
-  border: 1px solid #fff;
-  font-family: Arial,sans-serif;
-  font-size: 11pt;
-  height: 35px;
-  letter-spacing: 0;
-  margin: 10px;
-  padding: 0 10px;
-  width: 100%;
-}
-
-
 /* ====================== Restaurant Listing ====================== */
 
 #restaurants-list {
@@ -225,6 +171,13 @@ are less prominent than the main title */
 
 
 /* ====================== Restaurant Details ====================== */
+
+span.fav-space {
+  width: 100%;
+  display: flex;
+  order: 7
+}
+
 #favoritebtn {
   order: 7;
   background-color: #ff8e03;
@@ -250,6 +203,7 @@ are less prominent than the main title */
 form {
   width: 90%;
   height: auto;
+  max-width: 800px;
 }
 
 input[type="text"], textarea {
@@ -605,8 +559,8 @@ caption {
 
   #restaurant-hours td {
     line-height: 2.2em;
-    height: 2.2em;
-    font-size: 1.25em;
+    height: 2.4em;
+    font-size: 1.15em;
     flex-wrap: wrap;
   }
 
@@ -664,11 +618,6 @@ caption {
   #restaurant-hours {
     max-width: 600px;
     font-size: 1.2em;
-  }
-  
-
-  #restaurant-hours td {
-    height: 2em;
   }
 
 
