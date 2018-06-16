@@ -42,11 +42,10 @@ const showFavoriteStatus = (visible) => {
 const handleFavButtonLabel = (favorited) => {
   if (favorited) {
     favoriteBtn.innerText = "Unfavorite this restaurant";
-    showFavoriteStatus(true);
   } else {
     favoriteBtn.innerText = "Favorite this restaurant";
-    showFavoriteStatus(false);
   }
+  showFavoriteStatus(favorited);
 };
 
 const handleFavoriteStatus = (activated) => {
@@ -201,7 +200,7 @@ const createReviewHTML = (review) => {
   li.appendChild(name);
 
   const date = document.createElement('p');
-  date.innerHTML = review.updatedAt;
+  date.innerHTML = new Date(review.updatedAt);
   li.appendChild(date);
 
   const rating = document.createElement('p');
@@ -251,7 +250,6 @@ favoriteBtn.addEventListener("click", (e) => {
   favoriteStatus = !favoriteStatus;
   let syncFavoriteData = {id: restaurant_id, favorited: favoriteStatus};
   if (navigator.serviceWorker && window.SyncManager) {
-    console.log("syncing in works");
     navigator.serviceWorker.ready
       .then((sw) => {
         DBHelper.syncFavorite(syncFavoriteData)
@@ -260,8 +258,8 @@ favoriteBtn.addEventListener("click", (e) => {
       .then(() => handleFavoriteStatus(favoriteStatus));
   } else {
     DBHelper.checkFavoriteStatus(restaurant_id)
-      .then(favoriteStatus => {
-        DBHelper.markFavorite(restaurant_id, !favoriteStatus, handleFavoriteStatus);
+      .then(favoriteValue => {
+        DBHelper.markFavorite(restaurant_id, !favoriteValue, handleFavoriteStatus);
       }
     );
   }
@@ -294,7 +292,6 @@ form.addEventListener("submit", (e) => {
   }
 
   if (navigator.serviceWorker && window.SyncManager) {
-    console.log("syncing in works");
     navigator.serviceWorker.ready
       .then((sw) => {
         reviewData.id = syncIdCount += 1;
@@ -307,4 +304,7 @@ form.addEventListener("submit", (e) => {
   } else {
     DBHelper.postReview(reviewData);
   }
+
+  //clearing the form
+  form.reset();
 })
