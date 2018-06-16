@@ -20,7 +20,6 @@ const createStoreTransaction = (objStore, type) => {
 }
 
 const readIdbData = (objStore) => {
-    console.log("reading data");
     return createStoreTransaction(objStore, 'readonly')
         .then(data => data.store.getAll());     
 };
