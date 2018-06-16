@@ -103,9 +103,7 @@ self.addEventListener("sync", (event) => {
         event.waitUntil(
             readIdbData("sync-reviews")
                 .then(reviews => {
-                    console.log(reviews);
                     reviews.forEach(review => {
-                        console.log(review);
                         fetch("http://localhost:1337/reviews/", {
                             headers: {
                                 "Accept": "application/json",
@@ -130,7 +128,6 @@ self.addEventListener("sync", (event) => {
             readIdbData("sync-favorite")
                 .then(data => {
                     data.forEach(favoriteData => {
-                        console.log(favoriteData);
                         fetch(`http://localhost:1337/restaurants/${favoriteData.id}/`, {
                             headers: {
                                 "Accept": "application/json",
