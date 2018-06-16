@@ -155,8 +155,8 @@ const createRestaurantHTML = (restaurant) => {
   image.setAttribute('data-src', imgUrl.small);
 
   //define source sets for sources elements
-  sourceWebp.setAttribute('srcset', imgUrl.webp);
-  sourceJpeg.setAttribute('srcset', imgUrl.small);
+  sourceWebp.setAttribute('data-srcset', imgUrl.webp);
+  sourceJpeg.setAttribute('data-srcset', imgUrl.small);
   image.setAttribute('alt', DBHelper.imageDescriptionForRestaurant(restaurant));
 
   // Assembling all the picture components
