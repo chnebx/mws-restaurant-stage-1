@@ -42,7 +42,8 @@ const checkAndUpdateDatabase = (objStore, item) => {
 
 const updatePropertyInDatabase = (objStore, id, property, value) => {
     return createStoreTransaction(objStore, 'readwrite')
-        .then(data => data.store.openCursor()).then(function getRestaurantReviews(cursor) {
+        .then(data => data.store.openCursor())
+        .then(function getRestaurantReviews(cursor) {
         if (!cursor) {
             return;
         }
@@ -87,14 +88,15 @@ const deleteDbItem = (objStore, itemId) => {
 
 const filterDbItemsByProperty = (objStore, property, value) => {
     return createStoreTransaction(objStore, 'readonly')
-        .then(data => data.store.openCursor()).then(function getRestaurantReviews(cursor) {
-        if (!cursor) {
-            return;
-        }
-        if (cursor.value[property] === value) {
-            results.push(cursor.value);
-        }
-        return cursor.continue().then(getRestaurantReviews);
+        .then(data => data.store.openCursor())
+        .then(function getRestaurantReviews(cursor) {
+            if (!cursor) {
+                return;
+            }
+            if (cursor.value[property] === value) {
+                results.push(cursor.value);
+            }
+            return cursor.continue().then(getRestaurantReviews);
     }).then(() => {
         return results;
     });

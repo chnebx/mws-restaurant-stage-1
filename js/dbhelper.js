@@ -224,13 +224,24 @@ class DBHelper {
       webp: `/img/photos/small/${restaurant.photograph}.webp` 
     };
   }
-  
+
+  /**
+   * Check Restaurant Favorite Status.
+   */
   static checkFavoriteStatus(id){
     let isFavorite = false;
+    const handleFallback = () => {
+      return idbHandler.getDbItem("restaurants", id)
+      .then(restaurant => {
+        if (restaurant["is_favorite"]) {
+          isFavorite = true;
+        }
+        return isFavorite;
+      })
+    };
     return fetch("http://localhost:1337/restaurants/?is_favorite=true")
       .then(data => {
         if (data) {
-          console.log(data);
           data.json()
             .then(restaurants => {
               restaurants.forEach(restaurant => {
@@ -240,35 +251,18 @@ class DBHelper {
               })
             })
             .catch(err => {
-              return idbHandler.getDbItem("restaurants", id)
-                .then(restaurant => {
-                  if (restaurant["is_favorite"]) {
-                    console.log("found in the database but not online");
-                    isFavorite = true;
-                  }
-                  return isFavorite;
-                })
-              }).then(() => {
-                return isFavorite;
-                })
-              }
+              return handleFallback();
             })
-        .catch(err => {
-        return idbHandler.getDbItem("restaurants", id)
-          .then(restaurant => {
-            if (restaurant["is_favorite"]) {
-              console.log("found in the database but not online");
-              isFavorite = true;
-            }
-            return isFavorite;
-          })
+          }
         })
-        .then(() => {
-          return isFavorite;
-        });
+        .catch(err => {
+          return handleFallback();
+        })
   }
   
-
+  /**
+   * Set restaurants as favorite.
+   */
   static markFavorite(id, favoriteVal, callback){
     fetch(`http://localhost:1337/restaurants/${id}/`, {
       headers: {
@@ -283,10 +277,13 @@ class DBHelper {
       })
       .catch(err => { console.log(err);})    
     };
-
-    static syncFavorite(data) {
-      return idbHandler.storeIdbData("sync-favorite", data);
-    }
+    
+  /**
+   * Stores synced favorite status data in indexedDB.
+   */
+  static syncFavorite(data) {
+    return idbHandler.storeIdbData("sync-favorite", data);
+  }
 
   /**
    * Restaurant image attribute description.
