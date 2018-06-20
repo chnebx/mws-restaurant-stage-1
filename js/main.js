@@ -7,6 +7,8 @@ let map
 let markers = []
 let mapBtn = document.getElementsByClassName('show-map-btn')[0];
 let mapContainer = document.getElementById('map');
+let mapScript = document.getElementById("map-script");
+let activeMap = false;
 let myLazyLoad;
 
 /**
@@ -227,15 +229,24 @@ document.addEventListener('DOMContentLoaded', (event) => {
   fetchNeighborhoods();
   fetchCuisines();
   myLazyLoad = new LazyLoad();
+  updateRestaurants();
 });
 
 /**
  * Managing the "Show map" button events.
  */
-mapBtn.addEventListener('click', (e) => {
-  if (mapContainer.style.display === 'block') {
-    mapContainer.style.display = 'none';
+
+const toggleMap = () => {
+  if (activeMap) {
+    mapContainer.style.display = "none";
+    activeMap = false;
   } else {
-    mapContainer.style.display = 'block';
+    mapContainer.style.display = "block";
+    activeMap = true;
   }
+}
+
+
+mapBtn.addEventListener('click', (e) => {
+  toggleMap();
 });
