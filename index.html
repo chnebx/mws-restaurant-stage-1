@@ -97,7 +97,6 @@
     #map {
       height: 400px;
       width: 100%;
-      background-color: #ccc;
       display: none;
     }
 
@@ -166,6 +165,7 @@
   <main id="maincontent">
     <section id="map-container">
       <div id="map" role="application" tabindex="500"></div>
+      <!-- <img id="static_map" src="https://maps.googleapis.com/maps/api/staticmap?center=40.722216,-73.987501&zoom=13&size=600x300&maptype=roadmap&key=AIzaSyD0f0FIscmckpkv6vmzF_sReYMR9W4HX08"></img> -->
     </section>
     <section id="mainsection">
       <div class="filter-options">
@@ -187,7 +187,7 @@
     Copyright (c) 2017 <a href="/"><strong>Restaurant Reviews</strong></a> All Rights Reserved.
   </footer>
 
-  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAxy7zODPGgI8dfLSVr9X3itzDycXFKRys&libraries=places&callback=initMap"></script>
+  <script id="map-script" async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAxy7zODPGgI8dfLSVr9X3itzDycXFKRys&libraries=places&callback=initMap"></script>
 </body>
 
 </html>
