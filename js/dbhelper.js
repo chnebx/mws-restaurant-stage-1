@@ -290,7 +290,21 @@ class DBHelper {
    */
   static imageDescriptionForRestaurant(restaurant) {
     // adding different alt attributes for each picture
-    return `${restaurant.name} restaurant`;
+    const descriptions = [
+      "A table with guests at mission chinese food restaurant",
+      "Closeup of a pizza at emily restaurant",
+      "Empty tables at kang ho dong baekjeong restaurant",
+      "The front picture of the delicatessen restaurant",
+      "Crowd inside the roberta's pizza restaurant",
+      "Crowd inside the hometown BBQ restaurant",
+      "Front picture of the superiority burger restaurant",
+      "Frontside of the dutch restaurant",
+      "People eating at the mu ramen restaurant",
+      "Empty Casa Enrique Restaurant"
+    ]
+    // return `photo representing ${restaurant.name} restaurant`;
+    let photoId = restaurant.id - 1;
+    return descriptions[photoId];
   }
 
   /**
