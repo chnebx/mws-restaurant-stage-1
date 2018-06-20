@@ -14,13 +14,18 @@ const buffer = require('vinyl-buffer');
 const gulpif = require('gulp-if');
 const htmlmin = require('gulp-htmlmin');
 const webp = require('gulp-webp');
+const compression = require("compression");
+const gzip = require("gulp-gzip");
+const gzipStaticMiddleware = require('connect-gzip-static')('./builds/dist');
+const postCss = require("gulp-postcss");
+const unCss = require("postcss-uncss");
 
 const commonSources = ['manifest.json'];
 const htmlSources = ['index.html', 'restaurant.html', 'skeleton.html'];
 
 let buildPath = 'builds/development';
 let env = process.env.NODE_ENV || 'development';
-let server;
+let serverDir;
 
 if (process.argv[2] === '-production') {
     env = "production";
@@ -28,16 +33,40 @@ if (process.argv[2] === '-production') {
 
 if (env === 'development') {
     buildPath = 'builds/development';
-    server = './builds/development';
+    serverDir = './builds/development';
 } else if (env === 'production') {
     buildPath = 'builds/dist';
-    server = './builds/dist';
+    serverDir = './builds/dist';
+}
+
+function contentEncodingMiddleware(req, res, next) {
+    if (req._parsedUrl.pathname.match(/index.js/) || 
+        req._parsedUrl.pathname.match(/restaurant.js/) || 
+        req._parsedUrl.pathname.match(/styles.css/) || 
+        req._parsedUrl.pathname.match(/.html/)
+    ){
+        res.setHeader("Content-Encoding", "gzip");
+    }
+    next();
 }
 
 gulp.task('serve', () => {
     browserSync.init({
-        server: server,
+        server: {
+            baseDir: serverDir,
+            files: ['builds/dist/**/*.{html, js, css, gz}']
+        },
         port: 5000
+    }, function(err, bs){
+        if (env === 'production') {
+            process.stdout.write("true it should launch the middleware");
+            bs.addMiddleware("*",contentEncodingMiddleware, {
+                override: true
+            });
+            bs.addMiddleware("*", gzipStaticMiddleware, {
+                override: true
+            })
+        }
     });
 });
 
@@ -50,6 +79,7 @@ gulp.task('scripts', () => {
         .pipe(buffer())
         .pipe(gulpif(env === 'development', sourcemaps.init({loadMaps: true})))
         .pipe(gulpif(env === 'production', uglify()))
+        .pipe(gulpif(env === 'production', gzip()))
         .on('error', gulpUtil.log)
         .pipe(gulpif(env === 'development', sourcemaps.write()))
         .pipe(gulp.dest(`${buildPath}/js`));
@@ -61,6 +91,7 @@ gulp.task('scripts', () => {
         .pipe(buffer())
         .pipe(gulpif(env === 'development', sourcemaps.init({loadMaps: true})))
         .pipe(gulpif(env === 'production', uglify()))
+        .pipe(gulpif(env === 'production', gzip()))
         .on('error', gulpUtil.log)
         .pipe(gulpif(env === 'development', sourcemaps.write()))
         .pipe(gulp.dest(`${buildPath}/js`));
@@ -76,6 +107,12 @@ gulp.task('scripts-watch', ['scripts', 'sw-utility'], (done) => {
 gulp.task('css', () => {
     gulp.src('css/*.css')
         .pipe(gulpif(env === 'production', cssClean()))
+        // .pipe(gulpif(env == "production", 
+        //     postCss([unCss({
+        //         html: ["builds/dist/index.html", "builds/dist/restaurant.html"]
+        //     })])
+        // ))
+        .pipe(gulpif(env === 'production', gzip()))
         .pipe(gulp.dest(`${buildPath}/css`))
         .pipe(browserSync.stream())
 });
@@ -102,6 +139,7 @@ gulp.task('sw-utility', () => {
 gulp.task('html', () => {
     gulp.src(htmlSources)
         .pipe(gulpif(env === 'production', htmlmin({collapseWhitespace: true, minifyCSS: true})))
+        .pipe(gulpif(env === 'production', gzip()))
         .pipe(gulp.dest(`${buildPath}`));
 })
 
