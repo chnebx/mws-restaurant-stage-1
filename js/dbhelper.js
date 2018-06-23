@@ -165,6 +165,9 @@ class DBHelper {
     });
   }
 
+  /**
+   * Handles posting data from the review to the server.
+   */
   static postReview(data) {
     idbHandler.storeIdbData("reviews", data)
       .then(() => {
@@ -177,12 +180,15 @@ class DBHelper {
           body: JSON.stringify(data)
         }).then((res) => {
           res.json().then((data) => {
-            
+
           })
         })
       })
   }
 
+  /**
+   * Stores review data for syncing later when online.
+   */
   static postSyncReview(data) {
     return idbHandler.storeIdbData("sync-reviews", data);
   }
@@ -230,6 +236,8 @@ class DBHelper {
    */
   static checkFavoriteStatus(id){
     let isFavorite = false;
+
+    // if fetch doesn't work or json is not right
     const handleFallback = () => {
       return idbHandler.getDbItem("restaurants", id)
       .then(restaurant => {
@@ -239,6 +247,7 @@ class DBHelper {
         return isFavorite;
       })
     };
+
     return fetch("http://localhost:1337/restaurants/?is_favorite=true")
       .then(data => {
         if (data) {
