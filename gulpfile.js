@@ -59,7 +59,6 @@ gulp.task('serve', () => {
         port: 5000
     }, function(err, bs){
         if (env === 'production') {
-            process.stdout.write("true it should launch the middleware");
             bs.addMiddleware("*",contentEncodingMiddleware, {
                 override: true
             });
@@ -107,11 +106,6 @@ gulp.task('scripts-watch', ['scripts', 'sw-utility'], (done) => {
 gulp.task('css', () => {
     gulp.src('css/*.css')
         .pipe(gulpif(env === 'production', cssClean()))
-        // .pipe(gulpif(env == "production", 
-        //     postCss([unCss({
-        //         html: ["builds/dist/index.html", "builds/dist/restaurant.html"]
-        //     })])
-        // ))
         .pipe(gulpif(env === 'production', gzip()))
         .pipe(gulp.dest(`${buildPath}/css`))
         .pipe(browserSync.stream())
