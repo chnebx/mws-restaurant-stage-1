@@ -29,6 +29,9 @@ window.initMap = () => {
   });
 }
 
+/**
+ * Shows the "you favorited this restaurant" information.
+ */
 const showFavoriteStatus = (visible) => {
   if (visible){
     favHeading.style.display = "block";
@@ -39,6 +42,9 @@ const showFavoriteStatus = (visible) => {
   }
 }
 
+/**
+ * Changes the label of the "add to favorite" button in proper context.
+ */
 const handleFavButtonLabel = (favorited) => {
   if (favorited) {
     favoriteBtn.innerText = "Unfavorite this restaurant";
@@ -48,6 +54,9 @@ const handleFavButtonLabel = (favorited) => {
   showFavoriteStatus(favorited);
 };
 
+/**
+ * Handles pressing the "add to favorite" button.
+ */
 const handleFavoriteStatus = (activated) => {
   favoriteStatus = activated;
   showFavoriteStatus(activated);
@@ -274,6 +283,7 @@ form.addEventListener("submit", (e) => {
     return;
   }
 
+  // Determines the number of stars given to the restaurant review
   let chosenRating;
   for (let i=1; i < 6; i++){
     let val = `rating-${i}`;
@@ -282,8 +292,9 @@ form.addEventListener("submit", (e) => {
       break;
     }
   }
-  let restaurant_id = parseInt(getParameterByName("id"));
 
+  // Gather data from the review
+  let restaurant_id = parseInt(getParameterByName("id"));
   let reviewData = {
     restaurant_id: restaurant_id,
     name: form.username.value,
