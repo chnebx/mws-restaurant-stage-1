@@ -205,7 +205,6 @@ const addMarkersToMap = (restaurants = self.restaurants) => {
     google.maps.event.addListener(marker, 'click', () => {
       window.location.href = marker.url
     });
-    // self.markers.push(marker);
     markers.push(marker);
   });
 }
@@ -229,7 +228,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
   fetchNeighborhoods();
   fetchCuisines();
   myLazyLoad = new LazyLoad();
-  updateRestaurants();
 });
 
 /**
