@@ -412,12 +412,20 @@ picture {
   padding: 10px 20px 20px;
   position: relative;
   width: 90%;
+  border-radius: 6px;
 }
 
 
 #reviews-list li p {
   margin: 0 0 10px;
   font-size: 1.2em;
+}
+
+
+#reviews-list li p:first-child {
+  font-weight: bold;
+  font-size: 1.4em;
+  color: #555;
 }
 
 
