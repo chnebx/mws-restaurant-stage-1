@@ -172,6 +172,17 @@ const createRestaurantHTML = (restaurant) => {
   name.innerHTML = restaurant.name;
   li.append(name);
 
+  if (restaurant["is_favorite"]) {
+    let favoritedText = document.createElement("p");
+    favoritedText.innerHTML = "You favorited this restaurant";
+    favoritedText.classList.add("favoriteInfo");
+    li.append(favoritedText);
+    let star = document.createElement("p");
+    star.innerHTML = "&#x2605;"
+    star.classList.add("star-logo");
+    li.append(star);
+  }
+
   const neighborhood = document.createElement('p');
   neighborhood.innerHTML = restaurant.neighborhood;
   li.append(neighborhood);
