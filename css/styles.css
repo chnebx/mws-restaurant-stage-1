@@ -28,6 +28,7 @@
   padding: 0 30px 25px;
   text-align: center;
   width: 96%;
+  position: relative;
 }
 
 
@@ -69,6 +70,22 @@ are less prominent than the main title */
   text-align: center;
   text-decoration: none;
   text-transform: uppercase;
+}
+
+
+#restaurants-list .favoriteInfo {
+  display: block;
+  position: absolute;
+  left: -9999px;
+}
+
+#restaurants-list .star-logo {
+  color: #ff8e03;
+  font-size: 36px;
+  position: absolute;
+  display: block;
+  bottom: 0px;
+  left: 2%;
 }
 
 
