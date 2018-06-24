@@ -108,6 +108,7 @@ gulp.task('scripts-watch', ['scripts', 'sw-utility'], (done) => {
 gulp.task('css', () => {
     gulp.src('css/*.css')
         .pipe(gulpif(env === 'production', cssClean()))
+        .pipe(gulpif(env === 'production', gulp.dest(`${buildPath}/css`)))
         .pipe(gulpif(env === 'production', gzip()))
         .pipe(gulp.dest(`${buildPath}/css`))
         .pipe(browserSync.stream())
@@ -135,6 +136,7 @@ gulp.task('sw-utility', () => {
 gulp.task('html', () => {
     gulp.src(htmlSources)
         .pipe(gulpif(env === 'production', htmlmin({collapseWhitespace: true, minifyCSS: true})))
+        .pipe(gulpif(env === 'production', gulp.dest(`${buildPath}`)))
         .pipe(gulpif(env === 'production', gzip()))
         .pipe(gulp.dest(`${buildPath}`));
 })
